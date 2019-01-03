@@ -26,3 +26,15 @@ db = scoped_session(sessionmaker(bind=engine))
 def index():
 
     error = None
+
+    """Check to see if User is in session."""
+
+    user_id = session.get('user_id')
+
+    if (not 'user_id' in session):
+        g.user = None
+
+        return render_template("index.html", error=error)
+
+    else:
+        return render_template("index.html", error=error)
