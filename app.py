@@ -40,7 +40,7 @@ def index():
         g.user = db.execute(
             'SELECT * FROM users WHERE id IN (:id)', {"id": user_id, }
         ).fetchone()
-        
+
         return render_template("index.html", error=error)
 
 
@@ -117,3 +117,47 @@ def register():
 
     return render_template('auth/register.html', book=book, error=error, success=success)
 
+
+@app.route('/login', methods=('GET', 'POST'))
+def login():
+    """Log in a registered user by adding the user id to the session."""
+
+    error = None
+
+    success = None
+
+    user_id = session.get('user_id')
+    if ('user_id' in session):
+        g.user = db.execute(
+            'SELECT * FROM users WHERE id IN (:id)', {"id": user_id, }
+        ).fetchone()
+
+        # change to redirect to current page
+        return render_template("index.html", error=error)
+
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        error = None
+        user = db.execute("SELECT * FROM users WHERE email IN (:email) AND password IN (:password)",
+                          {"email": email, "password": password}).fetchone()
+
+        if user is None:
+            error = 'Incorrect Email or Password.'
+
+        if error is None:
+
+            """Store the user id in a new session and return to the index."""
+            session.clear()
+            session['user_id'] = user['id']
+            g.user = db.execute(
+                'SELECT * FROM users WHERE id IN (:id)', {"id": user_id, }
+            ).fetchone()
+            db.close()
+
+            success = 'Your Now Signed In.'
+
+            return redirect(url_for('index'))
+
+    return render_template('auth/login.html', book=book, error=error, success=success)
