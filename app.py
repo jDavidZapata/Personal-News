@@ -115,7 +115,7 @@ def register():
             # Change to redirect to curent page
             return redirect(url_for('index'))
 
-    return render_template('auth/register.html', book=book, error=error, success=success)
+    return render_template('auth/register.html', error=error, success=success)
 
 
 @app.route('/login', methods=('GET', 'POST'))
@@ -127,6 +127,7 @@ def login():
     success = None
 
     user_id = session.get('user_id')
+
     if ('user_id' in session):
         g.user = db.execute(
             'SELECT * FROM users WHERE id IN (:id)', {"id": user_id, }
@@ -140,6 +141,7 @@ def login():
         password = request.form['password']
 
         error = None
+
         user = db.execute("SELECT * FROM users WHERE email IN (:email) AND password IN (:password)",
                           {"email": email, "password": password}).fetchone()
 
@@ -160,4 +162,18 @@ def login():
 
             return redirect(url_for('index'))
 
-    return render_template('auth/login.html', book=book, error=error, success=success)
+    return render_template('auth/login.html', error=error, success=success)
+
+
+@app.route('/logout')
+def logout():
+
+    success = None
+
+    """Clear the current session, including the stored user id."""
+    session.clear()
+    g.user = None
+
+    success = 'Your Now Loged Out.'
+
+    return redirect(url_for('index', success=success))
