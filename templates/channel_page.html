@@ -3,20 +3,53 @@ extend layout
 
 container left
 
+row 1
+
+col
+
+channel title
+
+list of Pstories
+and/or
+list of Pnews links
+
+row 2
+
+col
+
 for message in messages 
-row 
 
-col  
+    row 
 
-message(one from 100 in session)
+    col  
+
+    message(one from 100 in session)
 
 
 
 container right 
 
-row 
+row 1
 
 col  
 
-create new message form 
+    if channel owner 
+    row a
+    col
+    create Pstory form
+
+    row b 
+    col
+    add link to Pnews links
+    
+    else
+    row a
+    col
+    related channels list
+    
+row 2
+
+col
+
+    create new message form 
 
