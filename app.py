@@ -177,3 +177,24 @@ def logout():
     success = 'Your Now Loged Out.'
 
     return redirect(url_for('index', success=success))
+
+
+@app.route('/channel_list', methods=('GET', 'POST'))
+def channel_list():
+
+
+
+@app.route('/channel', methods=('GET', 'POST'))
+def channel_page():
+
+
+@app.route('/channel_create', methods=('GET', 'POST'))
+def channel_create():
+
+
+@app.route('/pstory', methods=('GET', 'POST'))
+def pstory_newslink_page():
+
+
+@app.route('/categorie', methods=('GET', 'POST'))
+def categori():
