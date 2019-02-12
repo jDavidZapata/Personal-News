@@ -2,6 +2,11 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 import os, requests, json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
+#from flask_socketio import SocketIO
+''' add support for webSockets.
+    add flash=k-login support. 
+    add variable to support for local storage on the client side. '''
+
 
 app = Flask(__name__)
 
