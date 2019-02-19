@@ -1,3 +1,63 @@
+*, ::after, ::before {
+      box-sizing: border-box;
+    }
+   
+       
+    .form {
+      background-color: rgb(255, 251, 0);
+      justify-items: center;
+    }
+    
+    .htitle {      
+      margin-top: 40px;
+    }
+
+    .left {
+      padding: 30px;
+    }
+
+    .right {
+      padding: 30px;
+    }
+
+    footer {
+      padding: 10px;
+    }
+
+    .search {
+      color: khaki
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    a:link {
+    color: red;
+    }
+
+
+    /* visited link */
+    a:visited {
+        color: white;
+    }
+
+    /* mouse over link */
+    a:hover {
+        color: red;
+    }
+
+    /* selected link */
+    a:active {
+        color: #fffb00;
+    }
+
+    .col {
+      padding: 10px;
+    }
+
+
+
 stylesheet 
 and 
 bootstrap

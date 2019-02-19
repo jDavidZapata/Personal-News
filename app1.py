@@ -8,20 +8,37 @@ def index():
 
 texts = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam tortor mauris, maximus semper volutpat vitae, varius placerat dui. Nunc consequat dictum est, at vestibulum est hendrerit at. Mauris suscipit neque ultrices nisl interdum accumsan. Sed euismod, ligula eget tristique semper, lectus est pellentesque dui, sit amet rhoncus leo mi nec orci. Curabitur hendrerit, est in ultricies interdum, lacus lacus aliquam mauris, vel vestibulum magna nisl id arcu. Cras luctus tellus ac convallis venenatis. Cras consequat tempor tincidunt. Proin ultricies purus mauris, non tempor turpis mollis id. Nam iaculis risus mauris, quis ornare neque semper vel.",
         "Praesent euismod auctor quam, id congue tellus malesuada vitae. Ut sed lacinia quam. Sed vitae mattis metus, vel gravida ante. Praesent tincidunt nulla non sapien tincidunt, vitae semper diam faucibus. Nulla venenatis tincidunt efficitur. Integer justo nunc, egestas eget dignissim dignissim, fermentum ac sapien. Suspendisse non libero facilisis, dictum nunc ut, tincidunt diam.",
-        "Morbi imperdiet nunc ac quam hendrerit faucibus. Morbi viverra justo est, ut bibendum lacus vehicula at. Fusce eget risus arcu. Quisque dictum porttitor nisl, eget condimentum leo mollis sed. Proin justo nisl, lacinia id erat in, suscipit ultrices nisi. Suspendisse placerat nulla at volutpat interdum. In porttitor condimentum est nec ultricies. Donec nec mollis neque, id dapibus sem."]
+        "Morbi imperdiet nunc ac quam hendrerit faucibus. Morbi viverra justo est, ut bibendum lacus vehicula at. Fusce eget risus arcu. Quisque dictum porttitor nisl, eget condimentum leo mollis sed. Proin justo nisl, lacinia id erat in, suscipit ultrices nisi. Suspendisse placerat nulla at volutpat interdum. In porttitor condimentum est nec ultricies. Donec nec mollis neque, id dapibus sem.",
+        "Home", "Caterory", "Create Category", "Create Channel", "Log Out", "Log In", "Register"]
 
 @app.route("/home")
 def first():
-    return render_template("index1.html", texts=texts[0])
+    return f"{texts[3]} =======>>>>    {texts[0]}"
 
-@app.route("/second")
+@app.route("/category")
 def second():
-    return texts[1]
+    return texts[4]
 
-@app.route("/third")
+@app.route("/createCategory")
 def third():
-    return texts[2]
+    return texts[5]
 
+@app.route("/createChannel")
+def createChannel():
+    return texts[6]
+
+@app.route("/logout")
+def log_out():
+    return texts[7]
+
+
+@app.route("/login")
+def log_in():
+    return texts[8]
+
+@app.route("/register")
+def register():
+    return texts[9]
 
 if __name__ == "__main__":
     app.run()
