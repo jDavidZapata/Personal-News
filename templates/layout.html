@@ -7,13 +7,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <style>
+  #body {
+        margin-top: 60px;
+        background-color: rgb(255, 251, 0);
+        justify-items: center;
+    }
+
+  .left {
+      
+      margin-top: 80px;
+    }
   </style>
+
+  <link href="{{ url_for('static', filename='stylesheet.css')  }}" rel="stylesheet" type=text/css>
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
     crossorigin="anonymous">
 
-  <title>PNews{% block title %}{% endblock %}</title>
+  
+  {% block js %}
+  <script src="{{ url_for('static', filename='index1.js') }}"></script>
+  {% endblock %}
+
+  <title>PNews --> {% block title %}{% endblock %}</title>
 </head>
 <body>
   <div class="container-fluid">
@@ -30,25 +47,40 @@
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="{{ url_for('home') }}" data-page="home">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('Category') }}">Category</a>
+              <a class="nav-link" href="{{ url_for('category') }}" data-page="category">Category</a>
             </li>
-            {% if g.user %}
+            
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('channel_create') }}">Create Channel</a>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('logout') }}">Log Out</a>
-            </li>
-            {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+              <a class="nav-link" href="{{ url_for('createCategory') }}" data-page="createCategory">Create Category</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('login') }}">Log In</a>
+              <a class="nav-link" href="{{ url_for('createChannel') }}" data-page="createChannel">Create Channel</a>
             </li>
-            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}" data-page="logout">Log Out</a>
+            </li>
+            
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('register') }}" data-page="register">Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('login') }}" data-page="login">Log In</a>
+            </li>
+            
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('channelPage') }}" data-page="channelPage">Chaneel Page</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('storyPage') }}" data-page="storyPage">Story Page</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="channelslist" data-page="channelslist">Channels</a>
+            </li>
+
           </ul>
           <span class="navbar-text">
             {% if g.user %}
@@ -111,67 +143,3 @@
 
 </html>
     
-
-
-
-Header  
-with sign in and registration nav on left corner
-
-
-category nav menue 
-
-
-container one row two columms
-
-
-left col news story links
-or 
-list of channels with links
-or
-list of categories
-or 
-for channel
-list of Pstories
-and 
-list of 100 messages
-or 
-list of Pnews links
-and 
-list of 100 messages
-or 
-for Pstory or Pnews link
-story or link
-and 
-list of 100 comments
-
-
-
-
-right col slider bar to control fed
-or 
-create channel form 
-or
-create category form
-or
-for channel
-create Pstory form
-and
-add news link to Pnews links 
-and
-create messege form
-or 
-related channels list
-and 
-create message form
-or
-for Pstory or Pnews link
-related Pstories list
-and 
-create comment form
-
-
-
-footer
-
-
-

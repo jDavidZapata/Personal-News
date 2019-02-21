@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("index1.html")
+    return render_template("index2.html")
 
 texts = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam tortor mauris, maximus semper volutpat vitae, varius placerat dui. Nunc consequat dictum est, at vestibulum est hendrerit at. Mauris suscipit neque ultrices nisl interdum accumsan. Sed euismod, ligula eget tristique semper, lectus est pellentesque dui, sit amet rhoncus leo mi nec orci. Curabitur hendrerit, est in ultricies interdum, lacus lacus aliquam mauris, vel vestibulum magna nisl id arcu. Cras luctus tellus ac convallis venenatis. Cras consequat tempor tincidunt. Proin ultricies purus mauris, non tempor turpis mollis id. Nam iaculis risus mauris, quis ornare neque semper vel.",
         "Praesent euismod auctor quam, id congue tellus malesuada vitae. Ut sed lacinia quam. Sed vitae mattis metus, vel gravida ante. Praesent tincidunt nulla non sapien tincidunt, vitae semper diam faucibus. Nulla venenatis tincidunt efficitur. Integer justo nunc, egestas eget dignissim dignissim, fermentum ac sapien. Suspendisse non libero facilisis, dictum nunc ut, tincidunt diam.",
@@ -13,7 +13,7 @@ texts = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam torto
 
 
 @app.route("/home")
-def first():
+def home():
 
 	# Send list News links. 
 
@@ -23,14 +23,14 @@ def first():
 
 
 @app.route("/category")
-def second():
+def category():
 
 	# Send a list of links to categories.
 
     return jsonify(texts[4], texts[13], texts[14])
 
 @app.route("/createCategory")
-def third():
+def createCategory():
 
 	# Display Form for creating Categories.
 	# If Post then take form info and create category.
@@ -54,7 +54,7 @@ def createChannel():
     return jsonify(texts[6])
 
 @app.route("/logout")
-def log_out():
+def logout():
 
 	#   Log out user from session on server.
 	#	Send list of News links'''
@@ -63,7 +63,7 @@ def log_out():
 
 
 @app.route("/login")
-def log_in():
+def login():
 
 	#    Display Form for Loging in user.
 	#	If Post check to make sure user exists.
@@ -104,6 +104,17 @@ def storyPage():
 
     return jsonify(texts[11])
 
+@app.route("/channelslist")
+def channelslist():
+
+	# Send a list of links to channels.
+
+    #return jsonify(texts[4], texts[13], texts[14])
+
+
+    return render_template("channels_list.html")
+
 
 if __name__ == "__main__":
     app.run()
+

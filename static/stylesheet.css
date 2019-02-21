@@ -1,7 +1,13 @@
 *, ::after, ::before {
       box-sizing: border-box;
     }
-   
+
+
+    #body {
+        margin-top: 60px;
+        background-color: rgb(255, 251, 0);
+        justify-items: center;
+    }
        
     .form {
       background-color: rgb(255, 251, 0);
@@ -13,7 +19,8 @@
     }
 
     .left {
-      padding: 30px;
+      padding: 50px;
+      margin: 50px;
     }
 
     .right {
@@ -55,10 +62,4 @@
     .col {
       padding: 10px;
     }
-
-
-
-stylesheet 
-and 
-bootstrap
 
