@@ -1,7 +1,7 @@
  document.addEventListener('DOMContentLoaded', () => {
 
                 // Start by loading first page.
-                load_page('home');
+                load_page('channellist');
 
                 // Set links up to load new pages.
                 /*
