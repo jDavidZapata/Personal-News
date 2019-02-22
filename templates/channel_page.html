@@ -7,6 +7,86 @@
 {% block content %}{% endblock %}
 
 
+{% block body %}
+
+<hr>
+<div id="body">
+</div>
+
+
+<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-info left">
+    <h2>Channel Title:</h2>
+    <div class="row justify-content-end">
+        {% if channel %}
+
+        <div class="row justify-content-end">
+            {% for story in stories %}
+            <div class="col-lg-4 col-md-6 ">
+                <h2>*</h2>
+                <h4><a href="{{ url_for('story_link', story_title=story.title) }}" class="badge badge-warning">{{story.title}}</a></h4>
+            </div>
+            {% endfor %}
+        </div>
+
+
+        <div class="col-lg-4 col-md-6 ">
+            <h2>*</h2>
+            <h4><a href="{{ url_for('channelPage', channel_title=channel.title) }}" class="badge badge-warning">{{channel.title}}</a></h4>
+        </div>
+
+        <div class="col-lg-5 col-md-5 ">
+            <h3><span class="badge badge-pill badge-light">PStory Title: </span></h3>
+            <h4><a href="#" class="badge badge-warning">{{stoy[0].title}}</a></h4>
+        </div>
+        <div class="col-lg-5 col-md-5">
+            <h3><span class="badge badge-pill badge-light">PStory Author: </span></h3>
+            <h4><a href="#" class="badge badge-warning">{{stoy[0].author}}</a></h4>
+        </div>
+        <div class="col-lg-5 col-md-5">
+            <h3><span class="badge badge-pill badge-light">Year Published: </span></h3>
+            <h4><a href="#" class="badge badge-warning">{{story[0].year}}</a></h4>
+        </div>
+        <div class="col-lg-5 col-md-5">
+            <h3><span class="badge badge-pill badge-light">PStory Text : </span></h3>
+            <h4><a href="#" class="badge badge-warning">{{story[0].text}}</a></h4>
+        </div>
+        {% endif %}
+
+
+    </div>
+
+    <div class="row justify-content-end">
+        {% for message in messages %}
+        <div class="col-lg-4 col-md-6 ">
+            <h2>*</h2>
+            <h4><a href="" class="badge badge-warning">{{Message.text}}</a></h4>
+        </div>
+        {% endfor %}
+    </div>
+
+
+</div>
+
+<div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
+
+          <form id="form" class="form-inline justify-content-center" action="" method="">
+            <div class="form-group mx-sm-3 mb-2">
+              <label for="messsage" class="sr-only">Message</label>
+              <input type="text" name="message" class="form-control" id="message" placeholder="Enter New Message"
+                required>
+            </div>
+
+            <button id="button" type="submit" class="btn btn-primary mb-2">Create New Message</button>
+          </form>
+</div>
+
+
+{% endblock %}
+
+
+
+
+<!---
 extend layout
 
 
@@ -62,3 +142,4 @@ col
 
     create new message form 
 
+--->
