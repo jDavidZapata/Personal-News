@@ -4,9 +4,43 @@
 <h3>{% block title %}PNews{% endblock %}</h3>
 {% endblock %}
 
-{% block content %}{% endblock %}
+{% block body %}
+
+<hr>
+<div id="body">
+</div>
 
 
+<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-info left">
+    <h2>Categories:</h2>
+    <div class="row justify-content-end">
+        {% for category in categories %}
+        <div class="col-lg-4 col-md-6 ">
+            <h2>*</h2>
+            <h4><a href="{{ url_for('channelPage', category_title=category.title) }}" class="badge badge-warning">{{category.title}}</a></h4>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
+
+          <form class="form-inline justify-content-center" action="{{ url_for('createChannel') }}" method="POST">
+            <div class="form-group mx-sm-3 mb-2">
+              <label for="categoryname" class="sr-only">Category</label>
+              <input type="text" name="C_name" class="form-control" id="categorytitle" placeholder="Enter Category Name"
+                required>
+            </div>
+
+            <button type="submit" class="btn btn-primary mb-2">Create A New Category</button>
+          </form>
+</div>
+
+
+{% endblock %}
+
+
+<!--
 extend layout
 
 
@@ -29,3 +63,5 @@ if channel owner
     row 
     col
     create category form
+
+--->

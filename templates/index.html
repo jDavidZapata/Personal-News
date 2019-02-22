@@ -7,7 +7,7 @@
 {% block body %}
 
 <div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-info left">
-    <h2>Random Picks:</h2>
+    <h2>NEWS picks:</h2>
     <div class="row justify-content-end">
         {% for story in stories %}
         <div class="col-lg-4 col-md-6 ">
@@ -18,12 +18,14 @@
     </div>
 </div>
 
-
+<hr>
+<div id="body">
+</div>
 
 {% endblock %}
 
 
-
+<!---
 
 index
 
@@ -42,7 +44,6 @@ news link
 
 
 
-
 container right 
 
 row 
@@ -50,64 +51,5 @@ row
 col  
 
 slider bar 
-
-
-<!---
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>My Webpage</title>
-        <script>
-
-            document.addEventListener('DOMContentLoaded', () => {
-
-                // Start by loading first page.
-                load_page('home');
-
-                // Set links up to load new pages.
-                document.querySelectorAll('.nav-link').forEach(link => {
-                    link.onclick = () => {
-                        const page = link.dataset.page;
-                        load_page(page);
-                        return false;
-                    };
-                });
-            });
-
-            // Update text on popping state.
-            window.onpopstate = e => {
-                const data = e.state;
-                document.title = data.title;
-                document.querySelector('#body').innerHTML = data.text;
-            };
-
-            // Renders contents of new page in main view.
-            function load_page(name) {
-                const request = new XMLHttpRequest();
-                request.open('GET', `/${name}`);
-                request.onload = () => {
-                    const response = request.responseText;
-                    document.querySelector('#body').innerHTML = response;
-
-                    // Push state to URL.
-                    document.title = name;
-                    history.pushState({'title': name, 'text': response}, name, name);
-                };
-                request.send();
-            }
-
-        </script>
-    </head>
-    <body>
-        <ul id="nav">
-            <li><a href="" class="nav-link" data-page="home">Home Page</a></li>
-            <li><a href="" class="nav-link" data-page="second">Second Page</a></li>
-            <li><a href="" class="nav-link" data-page="third">Third Page</a></li>
-        </ul>
-        <hr>
-        <div id="body">
-        </div>
-    </body>
-</html>
-
 --->
+

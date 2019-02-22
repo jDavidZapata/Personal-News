@@ -7,7 +7,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <style>
-  #body {
+
+  *, ::after, ::before {
+      box-sizing: border-box;
+    }
+   
+       
+    .form {
+      background-color: rgb(255, 251, 0);
+      justify-items: center;
+    }
+    
+    .htitle {      
+      margin-top: 40px;
+    }
+
+    .left {
+      padding: 30px;
+    }
+
+    .right {
+      padding: 30px;
+    }
+
+    footer {
+      padding: 10px;
+    }
+
+    .search {
+      color: khaki
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    a:link {
+    color: red;
+    }
+
+
+    /* visited link */
+    a:visited {
+        color: white;
+    }
+
+    /* mouse over link */
+    a:hover {
+        color: red;
+    }
+
+    /* selected link */
+    a:active {
+        color: #fffb00;
+    }
+
+    .col {
+      padding: 10px;
+    }
+
+    #body {
         margin-top: 60px;
         background-color: rgb(255, 251, 0);
         justify-items: center;
@@ -17,6 +76,7 @@
       
       margin-top: 80px;
     }
+    
   </style>
 
   <link href="{{ url_for('static', filename='stylesheet.css')  }}" rel="stylesheet" type=text/css>
@@ -110,7 +170,13 @@
 
     {% block content %}{% endblock %}
 
-    {% block body %}{% endblock %}
+    <div class="container-fluid content">
+      <div class="row">
+
+      {% block body %}{% endblock %}
+
+      </div>
+    </div>
 
     <footer class="footer bg-warning">
       <div class="container-row">
