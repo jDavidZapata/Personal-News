@@ -1,12 +1,18 @@
-*, ::after, ::before {
+    *, ::after, ::before {
+
       box-sizing: border-box;
     }
 
 
     #body {
-        margin-top: 60px;
-        background-color: rgb(255, 251, 0);
-        justify-items: center;
+      margin-top: 60px;
+      background-color: rgb(255, 251, 0);
+      justify-items: center;
+    }
+
+    #container {
+      margin-top: 60px;
+      padding-top: 60px;
     }
        
     .form {
@@ -19,8 +25,8 @@
     }
 
     .left {
-      padding: 50px;
-      margin: 50px;
+      padding: 30px;
+      
     }
 
     .right {

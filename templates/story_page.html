@@ -1,5 +1,10 @@
 {% extends 'layout.html' %}
 
+{% block js %}
+  <script src="{{ url_for('static', filename='index.js') }}"></script>
+{% endblock %}
+
+
 {% block header %}
 <h3>{% block title %}PNews{% endblock %}</h3>
 {% endblock %}
@@ -9,42 +14,32 @@
 
 {% block body %}
 
-<hr>
-<div id="body">
-</div>
-
-
 <div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-info left">
     <h2>PStory:</h2>
-    <div class="row justify-content-end">
-
-        {% if story %}
-        <div class="col-lg-4 col-md-6 ">
-            <h2>*</h2>
-            <h4><a href="{{ url_for('storyPage', story_title=story.title) }}" class="badge badge-warning">{{story.title}}</a></h4>
-        </div>
-
+    <div class="row justify-content-end">     
+        
         <div class="col-lg-5 col-md-5 ">
+
             <h3><span class="badge badge-pill badge-light">PStory Title: </span></h3>
-            <h4><a href="#" class="badge badge-warning">{{stoy[0].title}}</a></h4>
+            <h4><a href="#" class="badge badge-warning">{{story.title}}</a></h4>
         </div>
         <div class="col-lg-5 col-md-5">
             <h3><span class="badge badge-pill badge-light">PStory Author: </span></h3>
-            <h4><a href="#" class="badge badge-warning">{{stoy[0].author}}</a></h4>
+            <h4><a href="#" class="badge badge-warning">{{story.author}}</a></h4>
         </div>
         <div class="col-lg-5 col-md-5">
             <h3><span class="badge badge-pill badge-light">Year Published: </span></h3>
-            <h4><a href="#" class="badge badge-warning">{{story[0].year}}</a></h4>
+            <h4><a href="#" class="badge badge-warning">{{story.year}}</a></h4>
         </div>
         <div class="col-lg-5 col-md-5">
             <h3><span class="badge badge-pill badge-light">PStory Text : </span></h3>
-            <h4><a href="#" class="badge badge-warning">{{story[0].text}}</a></h4>
+            <h4><a href="#" class="badge badge-warning">{{story.text}}</a></h4>
         </div>
 
-        {% endif %}
+        
     </div>
 
-    <div class="row justify-content-end">
+    <div class="row justify-content-end" style="background-color: violet">
         {% for comment in comments %}
         <div class="col-lg-4 col-md-6 ">
             <h2>*</h2>
@@ -68,10 +63,15 @@
           </form>
 </div>
 
+<hr>
+<div id="body">
+</div>
+
+
 
 {% endblock %}
 
-
+<!---
 
 extend layout
 
@@ -119,3 +119,4 @@ col
 
     create new comment form 
 
+--->

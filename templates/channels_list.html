@@ -13,12 +13,8 @@
 
 {% block body %}
 
-<hr>
-<div id="body">
-</div>
 
-
-<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-info left">
+<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-dark left">
     <h2>Channels:</h2>
     <div class="row justify-content-end">
         {% for channel in channels %}
@@ -30,19 +26,21 @@
     </div>
 </div>
 
-<div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
+<div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-success right">
 
-          <form class="form-inline justify-content-center" action="{{ url_for('createChannel') }}" method="POST">
-            <div class="form-group mx-sm-3 mb-2">
-              <label for="channelname" class="sr-only">Channel</label>
-              <input type="text" name="C_name" class="form-control" id="booktitle" placeholder="Enter Channel Name"
+    <form class="form-inline justify-content-center" action="{{ url_for('createChannel') }}" method="POST">
+    	<div class="form-group mx-sm-3 mb-2">
+    		<label for="channelname" class="sr-only">Channel</label>
+    		<input type="text" name="C_name" class="form-control" id="booktitle" placeholder="Enter Channel Name"
                 required>
-            </div>
-
-            <button id="button" type="submit" class="btn btn-primary mb-2">Create A Channel</button>
-          </form>
+        </div>
+        <button id="button" type="submit" class="btn btn-primary mb-2">Create A Channel</button>
+    </form>              
 </div>
 
+<hr>
+<div id="body">
+</div>
 
 {% endblock %}
 

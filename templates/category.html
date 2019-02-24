@@ -1,17 +1,17 @@
 {% extends 'layout.html' %}
 
+{% block js %}
+  <script src="{{ url_for('static', filename='index.js') }}"></script>
+{% endblock %}
+
+
 {% block header %}
 <h3>{% block title %}PNews{% endblock %}</h3>
 {% endblock %}
 
 {% block body %}
 
-<hr>
-<div id="body">
-</div>
-
-
-<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-info left">
+<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-success left">
     <h2>Categories:</h2>
     <div class="row justify-content-end">
         {% for category in categories %}
@@ -23,7 +23,7 @@
     </div>
 </div>
 
-<div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
+<div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-dark right">
 
           <form class="form-inline justify-content-center" action="{{ url_for('createChannel') }}" method="POST">
             <div class="form-group mx-sm-3 mb-2">
@@ -32,10 +32,13 @@
                 required>
             </div>
 
-            <button id="button" type="submit" class="btn btn-primary mb-2">Create A New Category</button>
+            <button id="button" type="submit" class="btn btn-primary mb-2">Create New Category</button>
           </form>
 </div>
 
+<hr>
+<div id="body">
+</div>
 
 {% endblock %}
 
