@@ -18,9 +18,10 @@ def index():
 
 	results = data['results']
 
-	'''
+	
 
-	result1 = results[0]
+	result1 = results[0]['multimedia'][2]
+	'''
 	result2 = results[1]
 	result3 = results[2]
 	result4 = results[3]
@@ -41,9 +42,10 @@ def index():
 	'''
 
 
-	re = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : results[i]['multimedia']} for i in range(len(results))]
+	re = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] else results[i]['multimedia']) } for i in range(len(results))]
 
-	
+	#r = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : results[i]['multimedia'][2]} for i in range(len(results))]
+
 	# result = [x for x in results[range(len(results))]]
 
 
@@ -69,11 +71,21 @@ def home():
 	# Send list News links. 
 	#  return jsonify(f"{texts[3]} =======>>>>    {texts[0]}")
 
+	res = requests.get("https://api.nytimes.com/svc/topstories/v2/home.json", params={"api-key": os.getenv("API_KEY")})
+		
+	if res.status_code != 200:
+		raise Exception("ERROR: API request unsuccessful.")
+	   
+	data = res.json()
+
+	results = data['results']
+
+	re = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : results[i]['multimedia']} for i in range(len(results))]
+
+	storys = re
 
 
-
-
-	return jsonify(texts[3], texts[12])
+	return jsonify(storys)
 
 
 

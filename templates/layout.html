@@ -55,34 +55,44 @@
     }
 
     a:link {
-    color: red;
+      color: red;
     }
 
 
     /* visited link */
     a:visited {
-        color: white;
+      color: white;
     }
 
     /* mouse over link */
     a:hover {
-        color: red;
+      color: red;
     }
 
     /* selected link */
     a:active {
-        color: #fffb00;
+      color: #fffb00;
     }
 
     .col {
       padding: 10px;
     }
 
-    .story-title {
+    a.story-title {
       border-bottom: 5px solid red;
       font-weight: bold;
+      text-decoration: none;
+      color: white;
     }
 
+    a:hover.story-title {
+      text-decoration: none;
+      color: black;
+    }
+
+    .story-bottom {
+      border-bottom: 3px solid white;
+    }
 
 
 
@@ -96,7 +106,7 @@
 
   
   {% block js %}
-  <script src="{{ url_for('static', filename='index1.js') }}"></script>
+  <script src="{{ url_for('static', filename='index.js') }}"></script>
   {% endblock %}
 
   <title>PNews --> {% block title %}{% endblock %}</title>
