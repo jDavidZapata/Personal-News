@@ -1,11 +1,50 @@
 from flask import Flask, render_template, jsonify
+import requests, json
+import os
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
 
-	return render_template("index.html")
+	res = requests.get("https://api.nytimes.com/svc/topstories/v2/technology.json", params={"api-key": os.getenv("API_KEY")})
+		
+	if res.status_code != 200:
+		raise Exception("ERROR: API request unsuccessful.")
+	   
+	data = res.json()
+
+	results = data['results']
+
+	result = []
+	r = {}
+
+	for i in range(len(results)):
+		r['section'] = (results[i]['section'])
+		r['title'] = (results[i]['title'])
+		r['abstract'] = (results[i]['abstract'])
+		r['url'] = (results[i]['url'])
+
+		result.append(r)
+
+
+	re = [results[i]['title'] for i in range(len(results))]
+
+	result1 = results[0]
+	result2 = results[1]
+	result3 = results[2]
+	result4 = results[3]
+
+	# result = [x for x in results[range(len(results))]]
+
+
+	#results = data['results'][0]['title']
+
+	print(result)
+
+	storys = results 
+
+	return render_template("index.html", storys=storys)
 
 texts = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam tortor mauris, maximus semper volutpat vitae, varius placerat dui. Nunc consequat dictum est, at vestibulum est hendrerit at. Mauris suscipit neque ultrices nisl interdum accumsan. Sed euismod, ligula eget tristique semper, lectus est pellentesque dui, sit amet rhoncus leo mi nec orci. Curabitur hendrerit, est in ultricies interdum, lacus lacus aliquam mauris, vel vestibulum magna nisl id arcu. Cras luctus tellus ac convallis venenatis. Cras consequat tempor tincidunt. Proin ultricies purus mauris, non tempor turpis mollis id. Nam iaculis risus mauris, quis ornare neque semper vel.",
 		"Praesent euismod auctor quam, id congue tellus malesuada vitae. Ut sed lacinia quam. Sed vitae mattis metus, vel gravida ante. Praesent tincidunt nulla non sapien tincidunt, vitae semper diam faucibus. Nulla venenatis tincidunt efficitur. Integer justo nunc, egestas eget dignissim dignissim, fermentum ac sapien. Suspendisse non libero facilisis, dictum nunc ut, tincidunt diam.",
@@ -16,9 +55,13 @@ texts = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam torto
 @app.route("/home")
 def home():
 
-	# Api call for links to news site.
+	# Make Api call to NYT for Top Story's News links.
 	# Send list News links. 
 	#  return jsonify(f"{texts[3]} =======>>>>    {texts[0]}")
+
+
+
+
 
 	return jsonify(texts[3], texts[12])
 
