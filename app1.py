@@ -4,6 +4,8 @@ import os
 
 app = Flask(__name__)
 
+storys = []
+
 @app.route("/")
 def index():
 
@@ -16,33 +18,41 @@ def index():
 
 	results = data['results']
 
-	result = []
-	r = {}
-
-	for i in range(len(results)):
-		r['section'] = (results[i]['section'])
-		r['title'] = (results[i]['title'])
-		r['abstract'] = (results[i]['abstract'])
-		r['url'] = (results[i]['url'])
-
-		result.append(r)
-
-
-	re = [results[i]['title'] for i in range(len(results))]
+	'''
 
 	result1 = results[0]
 	result2 = results[1]
 	result3 = results[2]
 	result4 = results[3]
 
+	result = []
+	r = {}
+	i = 0
+
+	for i in range(len(results)):
+		
+		r['section'] = (results[i]['section'])
+		r['title'] = (results[i]['title'])
+		r['abstract'] = (results[i]['abstract'])
+		r['url'] = (results[i]['url'])
+		
+		result.append(r)
+
+	'''
+
+
+	re = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : results[i]['multimedia']} for i in range(len(results))]
+
+	
 	# result = [x for x in results[range(len(results))]]
 
 
 	#results = data['results'][0]['title']
+	
 
-	print(result)
+	print(re)
 
-	storys = results 
+	storys = re
 
 	return render_template("index.html", storys=storys)
 
@@ -108,6 +118,7 @@ def logout():
 	#Log out user from session on server.
 	#Send list of News links'''
 	#return jsonify(texts[7])
+
 	return render_template("index.html")
 
 
