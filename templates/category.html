@@ -14,10 +14,10 @@
 <div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-success left">
     <h2>Categories:</h2>
     <div class="row justify-content-end">
-        {% for category in categories %}
+        {% for category in categorys %}
         <div class="col-lg-4 col-md-6 ">
             <h2>*</h2>
-            <h4><a href="{{ url_for('channelPage', category_title=category.title) }}" class="badge badge-warning">{{category.title}}</a></h4>
+            <h4><a href="{{ url_for('channelPage', category_title=category) }}" class="badge badge-warning">{{category}}</a></h4>
         </div>
         {% endfor %}
     </div>

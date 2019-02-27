@@ -19,9 +19,8 @@ def index():
 	results = data['results']
 
 	
-
-	result1 = results[0]['multimedia'][2]
 	'''
+	result1 = results[0]['multimedia'][2]
 	result2 = results[1]
 	result3 = results[2]
 	result4 = results[3]
@@ -40,10 +39,6 @@ def index():
 		result.append(r)
 
 	'''
-
-
-	re = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] else results[i]['multimedia']) } for i in range(len(results))]
-
 	#r = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : results[i]['multimedia'][2]} for i in range(len(results))]
 
 	# result = [x for x in results[range(len(results))]]
@@ -52,9 +47,14 @@ def index():
 	#results = data['results'][0]['title']
 	
 
-	print(re)
 
-	storys = re
+	storys = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 
+			'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] 
+			else results[i]['multimedia']) } for i in range(len(results))]
+
+	
+
+	print(storys)
 
 	return render_template("index.html", storys=storys)
 
@@ -80,12 +80,10 @@ def home():
 
 	results = data['results']
 
-	re = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : results[i]['multimedia']} for i in range(len(results))]
+	storys = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] else results[i]['multimedia']) } for i in range(len(results))]
 
-	storys = re
-
-
-	return jsonify(storys)
+	
+	return render_template("index.html", storys=storys)
 
 
 
@@ -97,7 +95,13 @@ def category():
 	#if 
 	#return jsonify(texts[4], texts[13], texts[14])
 
-	return render_template("category.html")
+	c =  "arts, automobiles, books, business, fashion, food, health, home, insider, magazine, movies, national, nyregion, obituaries, opinion, politics, realestate, science, sports, sundayreview, technology, theater, tmagazine, travel, upshot, world"
+
+	categorys = c.split(',')
+
+	print(categorys)
+
+	return render_template("category.html", categorys=categorys)
 
 
 @app.route("/createCategory")
@@ -189,7 +193,16 @@ def channelslist():
 
 	#Send a list of links to channels.
 
-	return render_template("channels_list.html")
+	channel1 = {"title":"My Channel", "author":"Juan David", "year": 2019, "text": "This is My Channel."}
+
+	channel2 = {"title":"Daves Channel", "author":"Dave", "year": 2019, "text": "This is daves Channel."}
+
+	channel3 = {"title":"juans Channel", "author":"Juan", "year": 2019, "text": "This is Juans Channel."}
+
+	channels = [channel1, channel2, channel3]
+
+
+	return render_template("channels_list.html", channels=channels)
 
 @app.route("/channellist")
 def channellist():

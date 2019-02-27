@@ -28,6 +28,50 @@
 
 
 <!---
+
+
+<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-primary left">
+    <h2 class="news-link">NEW'S LINKS:</h2>
+    <div class="row justify-content-end">
+        {% for story in storys %}
+
+        <br>
+
+        <div class="col-12">
+            <h3><span class="badge badge-pill badge-light">{{story.section}}: </span></h3>
+            <h4 ><a class="story-title" href="{{story.url}}">{{story.title}}</a></h4>
+        </div>
+
+        <div class="col-12">
+            <h4>{{story.abstract}}</h4>
+        </div>
+        
+        {% for picture in story.multimedia %}
+
+        {% if picture.format == 'Normal' %}
+        <div class="col-12 story-bottom">
+
+            <h4><a href="{{story.url}}" class="badge badge-light"><img src="{{picture.url}}" alt="{{picture.caption}}" class="center"></a></h4>
+            
+        </div>
+
+        {% endif %}
+
+        {% endfor %}
+
+        {% endfor %}
+    </div>
+</div>
+
+<div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-dark right">
+    <div id="body">
+    </div>   
+</div>
+
+<hr>
+
+
+
 <!DOCTYPE html>
 <html>
     <head>

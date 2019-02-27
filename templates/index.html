@@ -11,8 +11,6 @@
     <div class="row justify-content-end">
         {% for story in storys %}
 
-        <br>
-
         <div class="col-12">
             <h3><span class="badge badge-pill badge-light">{{story.section}}: </span></h3>
             <h4 ><a class="story-title" href="{{story.url}}">{{story.title}}</a></h4>
@@ -21,30 +19,31 @@
         <div class="col-12">
             <h4>{{story.abstract}}</h4>
         </div>
-		
-		{% for picture in story.multimedia %}
 
-        {% if picture.format == 'Normal' %}
-        <div class="col-12 story-bottom">
+		<div class="col-12 story-bottom">
 
-            <h4><a href="{{story.url}}" class="badge badge-light"><img src="{{picture.url}}" alt="{{picture.caption}}" class="center"></a></h4>
+            <h4><a href="{{story.url}}" class="badge badge-light"><img src="{{story.multimedia.url}}" alt="{{story.multimedia.caption}}" class="center"></a></h4>
             
         </div>
-
-        {% endif %}
-
+        
         {% endfor %}
 
-        {% endfor %}
     </div>
 </div>
 
 <div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-dark right">
-	<div id="body">
-	</div>   
+
+    <form class="form-inline justify-content-center" action="" method="POST">
+    	<div class="form-group mx-sm-3 mb-2">
+    		<label for="search" class="sr-only">Search</label>
+    		<input type="text" name="search" class="form-control" id="search" placeholder="Search For..."
+                required>
+        </div>
+        <button id="button" type="submit" class="btn btn-primary mb-2">Search</button>
+    </form>              
+
 </div>
 
-<hr>
 
 
 {% endblock %}

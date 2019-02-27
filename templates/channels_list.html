@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block js %}
-  <script src="{{ url_for('static', filename='index2.js') }}"></script>
+  <script src="{{ url_for('static', filename='index.js') }}"></script>
 {% endblock %}
 
 {% block header %}
@@ -14,13 +14,15 @@
 {% block body %}
 
 
-<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-dark left">
+<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-danger left">
     <h2>Channels:</h2>
     <div class="row justify-content-end">
         {% for channel in channels %}
-        <div class="col-lg-4 col-md-6 ">
+        <div class="col-11 story-bottom">
             <h2>*</h2>
             <h4><a href="{{ url_for('channelPage', channel_title=channel.title) }}" class="badge badge-warning">{{channel.title}}</a></h4>
+            <h3>By {{channel.author}}</h3>
+            <h5>{{channel.text}}</h5>
         </div>
         {% endfor %}
     </div>
