@@ -36,22 +36,23 @@
         
     </div>
 
-    <div class="row justify-content-end" style="background-color: violet">
-        {% if messages == 'No Messages.' %}
+    <div class="row justify-content-left" style="background-color: violet">
+        {% if storys == "No Story's." %}
 
         <div class="col-lg-4 col-md-6 ">
                
-            <h2>*{{messages}}</h2>
+            <h2>*{{storys}}</h2>
         </div>
 
 
         {% else %}
-        {% for message in messages %}
+        {% for story in storys %}
 
-        <div class="col-lg-4 col-md-6 ">
+        <div class="col-12">
             
-            <h4><a href="#" class="badge badge-warning">Message # {{messages.index(message) + 1}}</a></h4>
-            <h2>*{{message.text}}</h2>
+            <h4><a href="#" class="badge badge-warning">Story # {{storys.index(story) + 1}}</a></h4>
+            <h1>Title: {{story.title}}</h1>
+            <h2>*{{story.text}}</h2>
         </div>
         
         {% endfor %}
@@ -63,15 +64,49 @@
 
 <div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
 
-          <form id="form" class="form-inline justify-content-center" action="" method="">
-            <div class="form-group mx-sm-3 mb-2">
-              <label for="messsage" class="sr-only">Message</label>
-              <input type="text" name="message" class="form-control" id="message" placeholder="Enter New Message"
+    <form id="form" class="form-inline justify-content-center" action="" method="">
+    <div class="form-group mx-sm-3 mb-2">
+        <label for="story" class="sr-only">Story</label>
+        <input type="text" name="message" class="form-control" id="story" placeholder="Title Of Your New Story..."
                 required>
-            </div>
+    </div>
 
-            <button id="button" type="submit" class="btn btn-primary mb-2">Create New Message</button>
-          </form>
+
+    <button id="button" type="submit" class="btn btn-warning mb-2">Create New Story</button>
+    </form>
+
+    <form id="form" class="form-inline justify-content-center" action="" method="">
+    <div class="form-group mx-sm-3 mb-2">
+        <label for="messsage" class="sr-only">Message</label>
+        <input type="text" name="message" class="form-control" id="message" placeholder="Enter New Message"
+                required>
+    </div>
+
+    <button id="button" type="submit" class="btn btn-primary mb-2">Create New Message</button>
+    </form>
+
+    <div class="row justify-content-center" style="background-color: white">
+        {% if messages == 'No Messages.' %}
+
+        <div class="col-12">
+               
+            <h2>*{{messages}}</h2>
+        </div>
+
+
+        {% else %}
+        {% for message in messages %}
+
+        <div class="col-12 message-box">
+            
+            <h4><a href="#" class="badge badge-warning">Message # {{messages.index(message) + 1}}</a></h4>
+            <h2><*User>{{message.text}}</h2>
+        </div>
+        
+        {% endfor %}
+        {% endif %}
+    </div>
+
 </div>
 
 <hr>

@@ -21,13 +21,13 @@ channel5 = {"title":"Dman's Channel", "author":"DMAN", "year": 2018, "text": "Th
 channels = [channel5, channel1, channel2, channel3, channel4]
 
 
-story_s = [{"title": "A story", "text": "this is my first story."},{"title": "Another story", "text": "this is my second story."} ]
+storys_ = [{"title": "A story", "text": "this is my first story."},{"title": "Another story", "text": "this is my second story."} ]
 
 messages_ = [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}]
 
-story = {'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}
+story_ = {'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}
 
-comments = [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}]
+comments_ = [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}]
 
 @app.route("/")
 def index():
@@ -36,7 +36,7 @@ def index():
 		
 	if res.status_code != 200:
 		raise Exception("ERROR: API request unsuccessful.")
-	   
+				
 	data = res.json()
 
 	results = data['results']
@@ -99,7 +99,7 @@ def home():
 		
 	if res.status_code != 200:
 		raise Exception("ERROR: API request unsuccessful.")
-	   
+				
 	data = res.json()
 
 	results = data['results']
@@ -206,9 +206,10 @@ def channelPage(channel_title):
 			channel.append(s)
 
 
-
-
 	messages = channel[0]['messages'] if 'messages' in channel[0] else "No Messages."
+
+
+	storys = channel[0]['storys'] if 'storys' in channel[0] else "No Story's."
 
 
 	#channel = [(channels[i] for channel_title in channels[i]['title']) for i in range(len(channels))]
@@ -219,6 +220,8 @@ def channelPage(channel_title):
 	print(messages)
 
 	print(channel)
+
+	print(storys)
 
 	if channel == None:
 
@@ -232,7 +235,7 @@ def channelPage(channel_title):
 	messages = [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}]
 	'''
 
-	return render_template("channel_page.html", channel=channel, messages=messages)
+	return render_template("channel_page.html", channel=channel, messages=messages, storys=storys)
 
 
 @app.route("/storyPage")
