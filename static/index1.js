@@ -2,9 +2,10 @@
 
                 // Start by loading first page.
                 load_page('home');
+                
 
                 // Set links up to load new pages.
-                /*
+                
                 document.querySelectorAll('.nav-link').forEach(link => {
                     link.onclick = () => {
                         const page = link.dataset.page;
@@ -12,7 +13,7 @@
                         return false;
                     };
                 });
-                */
+                
             });
                 
             // Update text on popping state.

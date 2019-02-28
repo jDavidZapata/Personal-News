@@ -6,10 +6,33 @@ app = Flask(__name__)
 
 storys = []
 
+channel = None
+
+channel1 = {"title":"Channel-test", "author":"my self", "year": 2020, "text": "This is A Channel.", 'messages' : [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}], 'storys': [{"title": "1 story", "text": "first story.", 'comments' : [{'text':"1st. comment. hello"}, {'text':"2nd. comment. world"}]},{"title": "2 story", "text": "2nd story."}]}
+
+channel2 = {"title":"My Channel", "author":"Juan David", "year": 2019, "text": "This is My Channel.", 'storys': [{"title": "A 1 story", "text": "this is my first story."},{"title": "Another story", "text": "this is my 2nd story."}]}
+
+channel3 = {"title":"Daves Channel", "author":"Dave", "year": 2019, "text": "This is daves Channel.", 'storys' : [{"title": "A story", "text": "This is my 1st story."},{"title": "MY SECOND story", "text": "This is my second story."} ]}
+
+channel4 = {"title":"juans Channel", "author":"Juan", "year": 2019, "text": "This is Juans Channel.", 'storys' : [{"title": "story", "text": "a first story."}]}
+
+channel5 = {"title":"Dman's Channel", "author":"DMAN", "year": 2018, "text": "This DMAN Channel."}
+
+channels = [channel5, channel1, channel2, channel3, channel4]
+
+
+story_s = [{"title": "A story", "text": "this is my first story."},{"title": "Another story", "text": "this is my second story."} ]
+
+messages_ = [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}]
+
+story = {'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}
+
+comments = [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}]
+
 @app.route("/")
 def index():
 
-	res = requests.get("https://api.nytimes.com/svc/topstories/v2/technology.json", params={"api-key": os.getenv("API_KEY")})
+	res = requests.get("https://api.nytimes.com/svc/topstories/v2/home.json", params={"api-key": os.getenv("API_KEY")})
 		
 	if res.status_code != 200:
 		raise Exception("ERROR: API request unsuccessful.")
@@ -71,7 +94,8 @@ def home():
 	# Send list News links. 
 	#  return jsonify(f"{texts[3]} =======>>>>    {texts[0]}")
 
-	res = requests.get("https://api.nytimes.com/svc/topstories/v2/home.json", params={"api-key": os.getenv("API_KEY")})
+	
+	res = requests.get("https://api.nytimes.com/svc/topstories/v2/technology.json", params={"api-key": os.getenv("API_KEY")})
 		
 	if res.status_code != 200:
 		raise Exception("ERROR: API request unsuccessful.")
@@ -82,10 +106,10 @@ def home():
 
 	storys = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] else results[i]['multimedia']) } for i in range(len(results))]
 
-	
+	print(storys)
+
 	return render_template("index.html", storys=storys)
-
-
+	
 
 
 @app.route("/category")
@@ -95,9 +119,9 @@ def category():
 	#if 
 	#return jsonify(texts[4], texts[13], texts[14])
 
-	c =  "arts, automobiles, books, business, fashion, food, health, home, insider, magazine, movies, national, nyregion, obituaries, opinion, politics, realestate, science, sports, sundayreview, technology, theater, tmagazine, travel, upshot, world"
+	categories =  "arts, automobiles, books, business, fashion, food, health, home, insider, magazine, movies, national, nyregion, obituaries, opinion, politics, realestate, science, sports, sundayreview, technology, theater, tmagazine, travel, upshot, world"
 
-	categorys = c.split(',')
+	categorys = categories.split(',')
 
 	print(categorys)
 
@@ -159,19 +183,56 @@ def register():
 	return jsonify(texts[9])
 
 
-@app.route("/channelPage")
-def channelPage():
+@app.route("/channelPage/<string:channel_title>", methods=['GET', 'POST'])
+def channelPage(channel_title):
+
+	# route takes GET request with a name string... 
+	# looks for that string channel name and returns it.
+	# else returns channels page with channel not found error.
 
 	#Send back list of news links on channel.
 	#Send back first 100 messages.
 	#Send back Form for messages.(JS)
 	#return jsonify(texts[10])
 
+	ch = [(channels[i] if channel_title in channels[i]['title'] else None) for i in range(len(channels))]
+	
+	channel = []
+	print(ch) 
+	print()
+
+	for s in ch:				
+		if s != None:
+			channel.append(s)
+
+
+
+
+	messages = channel[0]['messages'] if 'messages' in channel[0] else "No Messages."
+
+
+	#channel = [(channels[i] for channel_title in channels[i]['title']) for i in range(len(channels))]
+
+
+	#channel = [channels[i] for channel_title in channels[i]['title'] for i in range(len(channels)) ]
+
+	print(messages)
+
+	print(channel)
+
+	if channel == None:
+
+		error = "No Channel"
+
+		return render_template("channels_list.html", error=error)
+
+	'''
 	channel = {"title":"My Channel", "author":"Juan David", "year": 2019, "text": "This is My Channel."}
 	storys = [{"title": "A story", "text": "this is my first story."},{"title": "Another story", "text": "this is my second story."} ]
 	messages = [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}]
+	'''
 
-	return render_template("channel_page.html", storys=storys, messages=messages)
+	return render_template("channel_page.html", channel=channel, messages=messages)
 
 
 @app.route("/storyPage")
@@ -192,7 +253,8 @@ def storyPage():
 def channelslist():
 
 	#Send a list of links to channels.
-
+	# link
+	'''
 	channel1 = {"title":"My Channel", "author":"Juan David", "year": 2019, "text": "This is My Channel."}
 
 	channel2 = {"title":"Daves Channel", "author":"Dave", "year": 2019, "text": "This is daves Channel."}
@@ -200,7 +262,7 @@ def channelslist():
 	channel3 = {"title":"juans Channel", "author":"Juan", "year": 2019, "text": "This is Juans Channel."}
 
 	channels = [channel1, channel2, channel3]
-
+	'''
 
 	return render_template("channels_list.html", channels=channels)
 
