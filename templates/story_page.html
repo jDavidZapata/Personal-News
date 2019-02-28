@@ -19,7 +19,7 @@
     <div class="row justify-content-end">     
         
         <div class="col-lg-5 col-md-5 ">
-
+			{% if story %}
             <h3><span class="badge badge-pill badge-light">PStory Title: </span></h3>
             <h4><a href="#" class="badge badge-warning">{{story.title}}</a></h4>
         </div>
@@ -34,42 +34,103 @@
         <div class="col-lg-5 col-md-5">
             <h3><span class="badge badge-pill badge-light">PStory Text : </span></h3>
             <h4><a href="#" class="badge badge-warning">{{story.text}}</a></h4>
-        </div>
-
-        
+        </div> 
+        {% endif %}       
     </div>
 
-    <div class="row justify-content-end" style="background-color: violet">
-        {% for comment in comments %}
+
+    <h2>Story Title: </h2>
+    <div class="row justify-content-center">
+
+        <div class="row justify-content-center">
+            
+                      
+            <div class="col-12">
+            <h2>Title ==> {{story.title}}</h2>
+            <h4><a href="#" class="badge badge-warning">Author: {{story.author}}</a></h4>
+
+            <h2>{{story.text}}</h2>
+            </div>
+    
+          
+            
+        </div>     
+    </div>
+
+    <div class="row justify-content-left" style="background-color: violet">
+        {% if links %}
+        {% if links == "No links." %}
+
         <div class="col-lg-4 col-md-6 ">
-            <h2>*</h2>
-            <h4><a href="" class="badge badge-warning">{{comment.text}}</a></h4>
+               
+            <h2>*{{links}}</h2>
         </div>
+
+
+        {% else %}
+        {% for link in links %}
+
+        <div class="col-12">
+            
+            <h4><a href="#" class="badge badge-warning">link # {{links.index(link) + 1}} - From {{link.section}}.</a></h4>
+            <h1>Title: {{link.title}}</h1>
+            <h2>*{{link.abstract}}</h2>
+
+        </div>
+        
         {% endfor %}
+        {% endif %}
+        {% endif %}
     </div>
 
+    
 </div>
 
 <div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
+	{% if not g.channelowner %}
+    <form id="form" class="form-inline justify-content-center" action="" method="">
+    <button id="button" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
+    </form>
+    {% endif %}
 
-          <form id="form" class="form-inline justify-content-center" action="" method="">
-            <div class="form-group mx-sm-3 mb-2">
-              <label for="comment" class="sr-only">Comment</label>
-              <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter New Comment"
+    <form id="form" class="form-inline justify-content-center" action="" method="">
+    <div class="form-group mx-sm-3 mb-2">
+    	<label for="comment" class="sr-only">Comment</label>
+        <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter New Comment"
                 required>
-            </div>
+    </div>
 
-            <button id="button" type="submit" class="btn btn-primary mb-2">Create New Comment</button>
-          </form>
+    <button id="button" type="submit" class="btn btn-primary mb-2">Create New Comment</button>
+    </form>
+
+    <div class="row justify-content-center" style="background-color: white">
+        {% if comments == 'No Comments.' %}
+
+        <div class="col-12">
+               
+            <h2>*{{comments}}</h2>
+        </div>
+
+
+        {% else %}
+        {% for comment in comments %}
+
+        <div class="col-12 comment-box">
+            
+            <h4><a href="#" class="badge badge-warning">Comment # {{comments.index(comment) + 1}}</a></h4>
+            <h5><*User>{{comment.text}}</h5>
+        </div>
+        
+        {% endfor %}
+        {% endif %}
+    </div>
+
 </div>
-
-<hr>
-<div id="body">
-</div>
-
 
 
 {% endblock %}
+
+
 
 <!---
 

@@ -198,7 +198,7 @@ def channelPage(channel_title):
 	ch = [(channels[i] if channel_title in channels[i]['title'] else None) for i in range(len(channels))]
 	
 	channel = []
-	print(ch) 
+	print(f"Unfilter Channel:{ch}") 
 	print()
 
 	for s in ch:				
@@ -211,17 +211,15 @@ def channelPage(channel_title):
 
 	storys = channel[0]['storys'] if 'storys' in channel[0] else "No Story's."
 
+	info = [{'title': channel[0]['title'], 'year': channel[0]['year'], 'author': channel[0]['author'], 'text': channel[0]['text']}]
 
-	#channel = [(channels[i] for channel_title in channels[i]['title']) for i in range(len(channels))]
+	print(f"Messages: {messages}")
 
+	print(f"Filter Channel: {channel}")
 
-	#channel = [channels[i] for channel_title in channels[i]['title'] for i in range(len(channels)) ]
+	print(f"Story's: {storys}")
 
-	print(messages)
-
-	print(channel)
-
-	print(storys)
+	print(f"Channel info: {info}")
 
 	if channel == None:
 
@@ -235,7 +233,7 @@ def channelPage(channel_title):
 	messages = [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}]
 	'''
 
-	return render_template("channel_page.html", channel=channel, messages=messages, storys=storys)
+	return render_template("channel_page.html", channel=channel, messages=messages, storys=storys, info=info)
 
 
 @app.route("/storyPage")
