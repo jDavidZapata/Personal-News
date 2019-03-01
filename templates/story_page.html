@@ -16,22 +16,21 @@
 
 <div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-info left">
     <h2>PStory:</h2>
-    <div class="row justify-content-end">     
-        
-        <div class="col-lg-5 col-md-5 ">
-			{% if story %}
+    <div class="row justify-content-center story-info">     
+        {% if story %}
+        <div class="col-lg-5 col-md-5 story-pdiv">			
             <h3><span class="badge badge-pill badge-light">PStory Title: </span></h3>
             <h4><a href="#" class="badge badge-warning">{{story.title}}</a></h4>
         </div>
-        <div class="col-lg-5 col-md-5">
+        <div class="col-lg-5 col-md-5 story-pdiv">
             <h3><span class="badge badge-pill badge-light">PStory Author: </span></h3>
             <h4><a href="#" class="badge badge-warning">{{story.author}}</a></h4>
         </div>
-        <div class="col-lg-5 col-md-5">
+        <div class="col-lg-5 col-md-5 story-pdiv">
             <h3><span class="badge badge-pill badge-light">Year Published: </span></h3>
             <h4><a href="#" class="badge badge-warning">{{story.year}}</a></h4>
         </div>
-        <div class="col-lg-5 col-md-5">
+        <div class="col-10 story-pdiv">
             <h3><span class="badge badge-pill badge-light">PStory Text : </span></h3>
             <h4><a href="#" class="badge badge-warning">{{story.text}}</a></h4>
         </div> 
@@ -39,29 +38,11 @@
     </div>
 
 
-    <h2>Story Title: </h2>
-    <div class="row justify-content-center">
-
-        <div class="row justify-content-center">
-            
-                      
-            <div class="col-12">
-            <h2>Title ==> {{story.title}}</h2>
-            <h4><a href="#" class="badge badge-warning">Author: {{story.author}}</a></h4>
-
-            <h2>{{story.text}}</h2>
-            </div>
-    
-          
-            
-        </div>     
-    </div>
-
-    <div class="row justify-content-left" style="background-color: violet">
+    <div class="row justify-content-left story-links" style="background-color: violet">
         {% if links %}
         {% if links == "No links." %}
 
-        <div class="col-lg-4 col-md-6 ">
+        <div class="col-lg-4 col-md-6 story-link">
                
             <h2>*{{links}}</h2>
         </div>
@@ -70,7 +51,7 @@
         {% else %}
         {% for link in links %}
 
-        <div class="col-12">
+        <div class="col-12 story-link">
             
             <h4><a href="#" class="badge badge-warning">link # {{links.index(link) + 1}} - From {{link.section}}.</a></h4>
             <h1>Title: {{link.title}}</h1>
@@ -103,10 +84,10 @@
     <button id="button" type="submit" class="btn btn-primary mb-2">Create New Comment</button>
     </form>
 
-    <div class="row justify-content-center" style="background-color: white">
+    <div class="row justify-content-center story-comments" style="background-color: white">
         {% if comments == 'No Comments.' %}
 
-        <div class="col-12">
+        <div class="col-12 story-comment">
                
             <h2>*{{comments}}</h2>
         </div>
@@ -115,7 +96,7 @@
         {% else %}
         {% for comment in comments %}
 
-        <div class="col-12 comment-box">
+        <div class="col-12 comment-box story-comment">
             
             <h4><a href="#" class="badge badge-warning">Comment # {{comments.index(comment) + 1}}</a></h4>
             <h5><*User>{{comment.text}}</h5>

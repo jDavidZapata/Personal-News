@@ -16,11 +16,10 @@
 
 <div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-primary left">
     <h2>Channel Title: </h2>
-    <h2>{{info.title}}</h2>
-    
+        
     <div class="row justify-content-center">
 
-        <div class="row justify-content-center">
+        <div class="row justify-content-center channel-info">
             {% if info %}
             {% for info in info %}
           
@@ -28,7 +27,7 @@
             <h2>Title ==> {{info.title}}</h2>
             <h4><a href="#" class="badge badge-warning">Author: {{info.author}}</a></h4>
 
-            <h2>{{info.text}}</h2>
+            <h2>Channel Description: {{info.text}}</h2>
             </div>
     
             {% endfor %}
@@ -37,7 +36,7 @@
         
     </div>
 
-    <div class="row justify-content-left" style="background-color: violet">
+    <div class="row justify-content-left channel-storys" style="background-color: violet">
         {% if storys == "No Story's." %}
 
         <div class="col-lg-4 col-md-6 ">
@@ -49,11 +48,11 @@
         {% else %}
         {% for story in storys %}
 
-        <div class="col-12">
+        <div class="col-12 channel-story">
             
             <h4><a href="#" class="badge badge-warning">Story # {{storys.index(story) + 1}}</a></h4>
-            <h1>Title: {{story.title}}</h1>
-            <h2>*{{story.text}}</h2>
+            <h2>Title: {{story.title}}</h2>
+            <h3>Story Description: *{{story.text}}</h3>
         </div>
         
         {% endfor %}
@@ -79,10 +78,10 @@
     <button id="button" type="submit" class="btn btn-primary mb-2">Create New Message</button>
     </form>
 
-    <div class="row justify-content-center" style="background-color: white">
+    <div class="row justify-content-center channel-messages" style="background-color: white">
         {% if messages == 'No Messages.' %}
 
-        <div class="col-12">
+        <div class="col-12 channel-message">
                
             <h2>*{{messages}}</h2>
         </div>
@@ -91,7 +90,7 @@
         {% else %}
         {% for message in messages %}
 
-        <div class="col-12 message-box">
+        <div class="col-12 channel-message message-box">
             
             <h4><a href="#" class="badge badge-warning">Message # {{messages.index(message) + 1}}</a></h4>
             <h5><*User>{{message.text}}</h5>
