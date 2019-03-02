@@ -4,9 +4,9 @@ import os
 
 app = Flask(__name__)
 
-storys = []
 
 channel = None
+
 
 channel1 = {"title":"Channel-test", "author":"my self", "year": 2020, "text": "This is A Channel.", 'messages' : [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}], 'storys': [{"title": "1 story", "text": "first story.", 'comments' : [{'text':"1st. comment. hello"}, {'text':"2nd. comment. world"}]},{"title": "2 story", "text": "2nd story."}]}
 
@@ -18,16 +18,53 @@ channel4 = {"title":"juans Channel", "author":"Juan", "year": 2019, "text": "Thi
 
 channel5 = {"title":"Dman's Channel", "author":"DMAN", "year": 2018, "text": "This DMAN Channel."}
 
+
+
 channels = [channel5, channel1, channel2, channel3, channel4]
 
 
-storys_ = [{"title": "A story", "text": "this is my first story."},{"title": "Another story", "text": "this is my second story."} ]
+messages = []
 
-messages_ = [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}]
 
-story_ = {'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}
+for c in channels:
+	if 'messages' in c:
+		messages.append(c['messages'])
 
-comments_ = [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}]
+
+		
+#messages = [channels[i]['messages'] if 'messages' in channels[i] else "No Messages." for i in range(len(channels))]
+
+print(f'Unfilter Messages 0:{messages}')
+
+
+storys = []
+
+for c in channels:
+	if 'storys' in c:
+		storys.append(c['storys'])
+
+
+print(f"Storys 0: {storys}")
+
+
+comments = []
+
+for s in storys[0]:
+	if 'comments' in s:
+		comments.append(s['comments'])
+
+
+print(f"comments 0: {comments}")
+
+
+
+storys_0 = [{"title": "A story", "text": "this is my first story."},{"title": "Another story", "text": "this is my second story."} ]
+
+messages_0 = [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}]
+
+story_0 = {'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}
+
+comments_0 = [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}]
 
 @app.route("/")
 def index():
@@ -77,7 +114,7 @@ def index():
 
 	
 
-	print(storys)
+	#print(storys)
 
 	return render_template("index.html", storys=storys)
 
@@ -106,7 +143,7 @@ def home():
 
 	storys = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] else results[i]['multimedia']) } for i in range(len(results))]
 
-	print(storys)
+	#print(storys)
 
 	return render_template("index.html", storys=storys)
 	
@@ -116,7 +153,8 @@ def home():
 def category():
 
 	#Send a list of links to categories.
-	#if 
+	# js will take responce and and display div with links to route that will search that category.
+	# html should 
 	#return jsonify(texts[4], texts[13], texts[14])
 
 	categories =  "arts, automobiles, books, business, fashion, food, health, home, insider, magazine, movies, national, nyregion, obituaries, opinion, politics, realestate, science, sports, sundayreview, technology, theater, tmagazine, travel, upshot, world"
@@ -195,8 +233,10 @@ def channelPage(channel_title):
 	#Send back Form for messages.(JS)
 	#return jsonify(texts[10])
 
-	ch = [(channels[i] if channel_title in channels[i]['title'] else None) for i in range(len(channels))]
+	#ch = [(channels[i] if channel_title in channels[i]['title'] else None) for i in range(len(channels))]
 	
+	
+	'''
 	channel = []
 	print(f"Unfilter Channel:{ch}") 
 	print()
@@ -204,10 +244,27 @@ def channelPage(channel_title):
 	for s in ch:				
 		if s != None:
 			channel.append(s)
+	
+	'''
+
+	channel = []
+	for c in channels:
+		if c['title'] == channel_title:
+			channel.append(c)
+
+	print(f'Unfilter Channel:{channel}')
 
 
+	'''
+	messages = []
+
+
+	if 'messages' in channel[0]:
+			messages.append(channel[0]['messages'])
+
+	'''
+	
 	messages = channel[0]['messages'] if 'messages' in channel[0] else "No Messages."
-
 
 	storys = channel[0]['storys'] if 'storys' in channel[0] else "No Story's."
 
@@ -240,14 +297,30 @@ def channelPage(channel_title):
 def storyPage():	
 
 	# Display Story.
-	#	Send back Story text.
-	#	Send back first 100 comments.
+	# take in <storyID>
+	#	Send back Story title, text.
+	#	Send back first 10 out of 100 comments.
 	#	send back Form for comment.(js)
+	# for link just save the url
 	#return jsonify(texts[11])
+	
+	'''
+	story = []
+
+	for s in storys:
+		if s['id'] == story_id:
+			story.append(s)
+	
+
+	print(f'Unfilter Story:{story}')
+
+	'''
 
 	story = {'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}
-	comments = [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}]
-	return render_template("story_page.html", story=story, comments=comments)
+	comments = [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}, {"text":"3. comment. "}, {"text":"4. comment. "}, {"text":"5. comment. hello"}, {"text":"6. comment. world"}]
+	links = [{'link': 1, 'url': 'url1', 'img': 'img1'}, {'link': 2, 'url': 'url2', 'img': 'img2'}, {'link': 3, 'url': 'url3', 'img': 'img3'}]
+
+	return render_template("story_page.html", story=story, comments=comments, links=links)
 
 
 @app.route("/channelslist")
