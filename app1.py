@@ -8,13 +8,13 @@ app = Flask(__name__)
 channel = None
 
 
-channel1 = {"title":"Channel-test", "author":"my self", "year": 2020, "text": "This is A Channel.", 'messages' : [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}], 'storys': [{"title": "1 story", "text": "first story.", 'comments' : [{'text':"1st. comment. hello"}, {'text':"2nd. comment. world"}]},{"title": "2 story", "text": "2nd story."}]}
+channel1 = {"title":"Channel-test", "author":"my self", "year": 2020, "text": "This is A Channel.", 'messages' : [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}], 'storys': [{"title": "1 story", 'author':'Juan David', 'year': 2019, "text": "first story.", 'comments' : [{'text':"1st. comment. hello"}, {'text':"2nd. comment. world"}]},{"title": "2 story", 'author':'Juan David', 'year': 2019, "text": "2nd story."},{'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}]}
 
-channel2 = {"title":"My Channel", "author":"Juan David", "year": 2019, "text": "This is My Channel.", 'storys': [{"title": "A 1 story", "text": "this is my first story."},{"title": "Another story", "text": "this is my 2nd story."}]}
+channel2 = {"title":"My Channel", "author":"Juan David", "year": 2019, "text": "This is My Channel.", 'messages' : [{"text":" 1st message"}, {"text":"2nd message"}, {"text":"3rd message."}], 'storys': [{"title": "A 1 story", 'author':'David', 'year': 2018, "text": "this is my first story."},{"title": "Another story", 'author':'Juavid', 'year': 2029, "text": "this is my 2nd story."}]}
 
-channel3 = {"title":"Daves Channel", "author":"Dave", "year": 2019, "text": "This is daves Channel.", 'storys' : [{"title": "A story", "text": "This is my 1st story."},{"title": "MY SECOND story", "text": "This is my second story."} ]}
+channel3 = {"title":"Daves Channel", "author":"Dave", "year": 2019, "text": "This is daves Channel.", 'storys' : [{"title": "A story", 'author':'Jd', 'year': 2029, "text": "This is my 1st story."},{"title": "MY SECOND story", 'author':'JDz', 'year': 2017, "text": "This is my second story."} ]}
 
-channel4 = {"title":"juans Channel", "author":"Juan", "year": 2019, "text": "This is Juans Channel.", 'storys' : [{"title": "story", "text": "a first story."}]}
+channel4 = {"title":"juans Channel", "author":"Juan", "year": 2019, "text": "This is Juans Channel.", 'storys' : [{"title": "story", 'author':'Juan Dz', 'year': 2017, "text": "A story."}]}
 
 channel5 = {"title":"Dman's Channel", "author":"DMAN", "year": 2018, "text": "This DMAN Channel."}
 
@@ -28,7 +28,8 @@ messages = []
 
 for c in channels:
 	if 'messages' in c:
-		messages.append(c['messages'])
+		for i in c['messages']:
+			messages.append(i)
 
 
 		
@@ -41,7 +42,8 @@ storys = []
 
 for c in channels:
 	if 'storys' in c:
-		storys.append(c['storys'])
+		for i in c['storys']:
+			storys.append(i)
 
 
 print(f"Storys 0: {storys}")
@@ -49,9 +51,10 @@ print(f"Storys 0: {storys}")
 
 comments = []
 
-for s in storys[0]:
+for s in storys:
 	if 'comments' in s:
-		comments.append(s['comments'])
+		for i in s['comments']:
+			comments.append(i)
 
 
 print(f"comments 0: {comments}")
@@ -108,7 +111,7 @@ def index():
 	
 
 
-	storys = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 
+	links = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 
 			'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] 
 			else results[i]['multimedia']) } for i in range(len(results))]
 
@@ -116,7 +119,7 @@ def index():
 
 	#print(storys)
 
-	return render_template("index.html", storys=storys)
+	return render_template("index.html", links=links)
 
 texts = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam tortor mauris, maximus semper volutpat vitae, varius placerat dui. Nunc consequat dictum est, at vestibulum est hendrerit at. Mauris suscipit neque ultrices nisl interdum accumsan. Sed euismod, ligula eget tristique semper, lectus est pellentesque dui, sit amet rhoncus leo mi nec orci. Curabitur hendrerit, est in ultricies interdum, lacus lacus aliquam mauris, vel vestibulum magna nisl id arcu. Cras luctus tellus ac convallis venenatis. Cras consequat tempor tincidunt. Proin ultricies purus mauris, non tempor turpis mollis id. Nam iaculis risus mauris, quis ornare neque semper vel.",
 		"Praesent euismod auctor quam, id congue tellus malesuada vitae. Ut sed lacinia quam. Sed vitae mattis metus, vel gravida ante. Praesent tincidunt nulla non sapien tincidunt, vitae semper diam faucibus. Nulla venenatis tincidunt efficitur. Integer justo nunc, egestas eget dignissim dignissim, fermentum ac sapien. Suspendisse non libero facilisis, dictum nunc ut, tincidunt diam.",
@@ -141,11 +144,11 @@ def home():
 
 	results = data['results']
 
-	storys = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] else results[i]['multimedia']) } for i in range(len(results))]
+	links = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] else results[i]['multimedia']) } for i in range(len(results))]
 
 	#print(storys)
 
-	return render_template("index.html", storys=storys)
+	return render_template("index.html", links=links)
 	
 
 
@@ -247,12 +250,15 @@ def channelPage(channel_title):
 	
 	'''
 
-	channel = []
+	channel = {}
 	for c in channels:
 		if c['title'] == channel_title:
-			channel.append(c)
+			channel = (c)
 
 	print(f'Unfilter Channel:{channel}')
+
+	ch = channel
+
 
 
 	'''
@@ -264,15 +270,18 @@ def channelPage(channel_title):
 
 	'''
 	
-	messages = channel[0]['messages'] if 'messages' in channel[0] else "No Messages."
+	#messages = channel[0]['messages'] if 'messages' in channel[0] else "No Messages."
 
-	storys = channel[0]['storys'] if 'storys' in channel[0] else "No Story's."
+	messages = ch['messages'] if 'messages' in ch else "No Messages."
 
-	info = [{'title': channel[0]['title'], 'year': channel[0]['year'], 'author': channel[0]['author'], 'text': channel[0]['text']}]
+	#storys = channel[0]['storys'] if 'storys' in channel[0] else "No Story's."
+	storys = channel['storys'] if 'storys' in channel else "No Story's."
+	
+	info = {'title': channel['title'], 'year': channel['year'], 'author': channel['author'], 'text': channel['text']}
 
 	print(f"Messages: {messages}")
 
-	print(f"Filter Channel: {channel}")
+	print(f"Filter Channel: {ch}")
 
 	print(f"Story's: {storys}")
 
@@ -293,8 +302,8 @@ def channelPage(channel_title):
 	return render_template("channel_page.html", channel=channel, messages=messages, storys=storys, info=info)
 
 
-@app.route("/storyPage")
-def storyPage():	
+@app.route("/storyPage/<string:story_title>", methods=['GET', 'POST'])
+def storyPage(story_title):	
 
 	# Display Story.
 	# take in <storyID>
@@ -314,9 +323,30 @@ def storyPage():
 
 	print(f'Unfilter Story:{story}')
 
-	'''
 
-	story = {'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}
+	'''
+	print(f"title ==== {story_title}")
+	print(f"@@@======>>Storys{storys}")
+
+	story = {}
+	for s in storys:
+		if s['title'] == story_title:
+			story = s
+
+	print(f'Unfilter storryy:{story}')
+
+	
+
+	print(f"Filter Stooorrryyy: {story}")
+
+
+
+
+
+
+
+
+	#story = {'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}
 	comments = [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}, {"text":"3. comment. "}, {"text":"4. comment. "}, {"text":"5. comment. hello"}, {"text":"6. comment. world"}]
 	links = [{'link': 1, 'url': 'url1', 'img': 'img1'}, {'link': 2, 'url': 'url2', 'img': 'img2'}, {'link': 3, 'url': 'url3', 'img': 'img3'}]
 

@@ -15,28 +15,27 @@
 {% block body %}
 
 <div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-info left">
-    <h2>PStory:</h2>
+    {% if story %}
+    <h2 class="story-title">PStory Title:: {{story.title}}</h2>
+    
     <div class="row justify-content-center story-info">     
-        {% if story %}
-        <div class="col-lg-5 col-md-5 story-pdiv">			
-            <h3><span class="badge badge-pill badge-light">PStory Title: </span></h3>
-            <h4><a href="#" class="badge badge-warning">{{story.title}}</a></h4>
-        </div>
-        <div class="col-lg-5 col-md-5 story-pdiv">
+        
+        
+        <div class="col-lg-5 col-md-5 story-info-e">
             <h3><span class="badge badge-pill badge-light">PStory Author: </span></h3>
             <h4><a href="#" class="badge badge-warning">{{story.author}}</a></h4>
         </div>
-        <div class="col-lg-5 col-md-5 story-pdiv">
+        <div class="col-lg-5 col-md-5 story-info-e">
             <h3><span class="badge badge-pill badge-light">Year Published: </span></h3>
             <h4><a href="#" class="badge badge-warning">{{story.year}}</a></h4>
         </div>
-        <div class="col-10 story-pdiv">
+        <div class="col-10 story-info-e">
             <h3><span class="badge badge-pill badge-light">PStory Text : </span></h3>
             <h4><a href="#" class="badge badge-warning">{{story.text}}</a></h4>
         </div> 
-        {% endif %}       
+               
     </div>
-
+	{% endif %}
 
     <div class="row justify-content-left story-links" style="background-color: violet">
         {% if links %}

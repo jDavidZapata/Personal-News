@@ -15,31 +15,32 @@
 {% block body %}
 
 <div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-primary left">
-    <h2>Channel Title: </h2>
+    {% if info %}
+    <h2 class="channel-title">Channel Title ==> {{info.title}} </h2>
         
     <div class="row justify-content-center">
 
         <div class="row justify-content-center channel-info">
-            {% if info %}
-            {% for info in info %}
+            
+            
           
-            <div class="col-12">
-            <h2>Title ==> {{info.title}}</h2>
-            <h4><a href="#" class="badge badge-warning">Author: {{info.author}}</a></h4>
+            <div class="col-12 channel-info-e">
+                <h2 ></h2>
+                <h4><a href="#" class="badge badge-warning">Author: {{info.author}}</a></h4>
 
-            <h2>Channel Description: {{info.text}}</h2>
+                <h2>Channel Description: {{info.text}}</h2>
             </div>
     
-            {% endfor %}
-            {% endif %}
+            
+            
         </div>
         
     </div>
-
+    {% endif %}
     <div class="row justify-content-left channel-storys" style="background-color: violet">
         {% if storys == "No Story's." %}
 
-        <div class="col-lg-4 col-md-6 ">
+        <div class="col-lg-4 col-md-6 channel-story">
                
             <h2>*{{storys}}</h2>
         </div>
@@ -50,8 +51,8 @@
 
         <div class="col-12 channel-story">
             
-            <h4><a href="#" class="badge badge-warning">Story # {{storys.index(story) + 1}}</a></h4>
-            <h2>Title: {{story.title}}</h2>
+            <h4><a href="{{ url_for('storyPage', story_title=story.title) }}" class="badge badge-warning">Story # {{storys.index(story) + 1}}</a></h4>
+            <h2 class="storys-title">Title: {{story.title}}</h2>
             <h3>Story Description: *{{story.text}}</h3>
         </div>
         
@@ -63,7 +64,7 @@
 </div>
 
 <div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
-    {% if g.channelowner %}
+    {% if not g.channelowner %}
     <form id="form" class="form-inline justify-content-center" action="" method="">
     <button id="button" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
     </form>
@@ -102,9 +103,6 @@
 
 </div>
 
-<hr>
-<div id="body">
-</div>
 
 {% endblock %}
 
