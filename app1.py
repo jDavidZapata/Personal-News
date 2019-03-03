@@ -19,19 +19,35 @@ channel4 = {"title":"juans Channel", "author":"Juan", "year": 2019, "text": "Thi
 channel5 = {"title":"Dman's Channel", "author":"DMAN", "year": 2018, "text": "This DMAN Channel."}
 
 
-
 channels = [channel5, channel1, channel2, channel3, channel4]
 
 
 messages = []
+key = 'messages'
+
+def get_whatever(list_of_obj, key, new_list):
+	for c in list_of_obj:
+		if key in c:
+			for i in c[key]:
+				new_list.append(i)
+
+get_whatever(channels, key, messages)
 
 
-for c in channels:
-	if 'messages' in c:
-		for i in c['messages']:
-			messages.append(i)
 
 
+
+'''
+messages = []
+
+def get_messages(channels):
+	for c in channels:
+		if 'messages' in c:
+			for i in c['messages']:
+				messages.append(i)
+
+get_messages(channels)
+'''
 		
 #messages = [channels[i]['messages'] if 'messages' in channels[i] else "No Messages." for i in range(len(channels))]
 
@@ -39,6 +55,9 @@ print(f'Unfilter Messages 0:{messages}')
 
 
 storys = []
+
+
+
 
 for c in channels:
 	if 'storys' in c:
@@ -370,12 +389,15 @@ def channelslist():
 
 	return render_template("channels_list.html", channels=channels)
 
-@app.route("/channellist")
-def channellist():
+@app.route("/storyslist")
+def storyslist():
 
-	#Send a list of links to channels.
-	#return render_template("channels_list.html")
-	return jsonify(texts[15])
+	#Send a list of links to storys.
+
+
+
+	return render_template("storys_list.html", storys=storys)
+	
 
 
 	
