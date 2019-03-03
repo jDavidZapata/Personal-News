@@ -8,7 +8,7 @@ app = Flask(__name__)
 channel = None
 
 
-channel1 = {"title":"Channel-test", "author":"my self", "year": 2020, "text": "This is A Channel.", 'messages' : [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}], 'storys': [{"title": "1 story", 'author':'Juan David', 'year': 2019, "text": "first story.", 'comments' : [{'text':"1st. comment. hello"}, {'text':"2nd. comment. world"}]},{"title": "2 story", 'author':'Juan David', 'year': 2019, "text": "2nd story."},{'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}]}
+channel1 = {"title":"Channel-test", "author":"my self", "year": 2020, "text": "This is A Channel.", 'messages' : [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}], 'storys': [{"title": "1 story", 'author':'Juan David', 'year': 2019, "text": "first story.", 'comments' : [{'text':"1st. comment. hello"}, {'text':"2nd. comment. world"}]},{"title": "2 story", 'author':'Juan David', 'year': 2019, "text": "2nd story."},{'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.', 'links': [{'link': 1, 'url': 'url1', 'img': 'img1'}, {'link': 2, 'url': 'url2', 'img': 'img2'}, {'link': 3, 'url': 'url3', 'img': 'img3'}], 'comments': [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}, {"text":"3. comment. "}, {"text":"4. comment. "}, {"text":"5. comment. hello"}, {"text":"6. comment. world"}]}]}
 
 channel2 = {"title":"My Channel", "author":"Juan David", "year": 2019, "text": "This is My Channel.", 'messages' : [{"text":" 1st message"}, {"text":"2nd message"}, {"text":"3rd message."}], 'storys': [{"title": "A 1 story", 'author':'David', 'year': 2018, "text": "this is my first story."},{"title": "Another story", 'author':'Juavid', 'year': 2029, "text": "this is my 2nd story."}]}
 
@@ -21,7 +21,7 @@ channel5 = {"title":"Dman's Channel", "author":"DMAN", "year": 2018, "text": "Th
 
 channels = [channel5, channel1, channel2, channel3, channel4]
 
-def get_whatever(list_of_obj, key, new_list):
+def get_whatever_list(list_of_obj, key, new_list):
 	for c in list_of_obj:
 		if key in c:
 			for i in c[key]:
@@ -29,10 +29,16 @@ def get_whatever(list_of_obj, key, new_list):
 
 
 
+def get_whatever_dic (objs_list, key, value, new_dic):
+		for c in objs_list:
+			if value in c[key]:  
+				new_dic = c
+
+
 messages = []
 key1 = 'messages'
 
-get_whatever(channels, key1, messages)
+get_whatever_list(channels, key1, messages)
 
 
 
@@ -57,7 +63,7 @@ print(f'Unfilter Messages 0:{messages}')
 
 storys = []
 key2 = 'storys'
-get_whatever(channels, key2, storys)
+get_whatever_list(channels, key2, storys)
 
 '''
 for c in channels:
@@ -72,7 +78,7 @@ print(f"Storys 0: {storys}")
 
 comments = []
 key3 = 'comments'
-get_whatever(storys, key3, comments)
+get_whatever_list(storys, key3, comments)
 
 '''
 for s in storys:
@@ -251,6 +257,8 @@ def register():
 	return jsonify(texts[9])
 
 
+
+
 @app.route("/channelPage/<string:channel_title>", methods=['GET', 'POST'])
 def channelPage(channel_title):
 
@@ -277,10 +285,28 @@ def channelPage(channel_title):
 	
 	'''
 
+	'''
+
+	def get_whatever_dic (objs_list, key, value, new_dic):
+		for c in objs_list:
+			if c[key] == value:
+				new_dic = c
+
+	
+
+
+	channel = {}
+	key4 = 'title'
+	value1 = channel_title
+	get_whatever_dic(channels, key4, value1, channel)
+
+
+	'''
 	channel = {}
 	for c in channels:
 		if c['title'] == channel_title:
 			channel = c
+
 
 	print(f'Unfilter Channel:{channel}')
 
@@ -304,7 +330,12 @@ def channelPage(channel_title):
 	#storys = channel[0]['storys'] if 'storys' in channel[0] else "No Story's."
 	storys = channel['storys'] if 'storys' in channel else "No Story's."
 	
-	info = {'title': channel['title'], 'year': channel['year'], 'author': channel['author'], 'text': channel['text']}
+	
+	if channel:
+		info = {'title': channel['title'], 'year': channel['year'], 'author': channel['author'], 'text': channel['text']}
+	else:
+		info = {}	
+
 
 	print(f"Messages: {messages}")
 
@@ -355,27 +386,35 @@ def storyPage(story_title):
 	print(f"title ==== {story_title}")
 	print(f"@@@======>>Storys{storys}")
 
+	'''
+	story = {}
+	key5 = 'title'
+	value2 = story_title
+	get_whatever_dic(storys, key5, value2, story)
+	
+
+	'''
 	story = {}
 	for s in storys:
 		if s['title'] == story_title:
 			story = s
+	
 
 	print(f'Unfilter storryy:{story}')
 
 	
-
-	print(f"Filter Stooorrryyy: {story}")
-
+	
 
 
+	comments = story['comments'] if 'comments' in story else "No Comments."
 
-
-
-
+	links = story['links'] if 'links' in story else "No Links."
+	
+	print(f"Filter comments: {comments}")
 
 	#story = {'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}
-	comments = [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}, {"text":"3. comment. "}, {"text":"4. comment. "}, {"text":"5. comment. hello"}, {"text":"6. comment. world"}]
-	links = [{'link': 1, 'url': 'url1', 'img': 'img1'}, {'link': 2, 'url': 'url2', 'img': 'img2'}, {'link': 3, 'url': 'url3', 'img': 'img3'}]
+	#comments = [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}, {"text":"3. comment. "}, {"text":"4. comment. "}, {"text":"5. comment. hello"}, {"text":"6. comment. world"}]
+	#links = [{'link': 1, 'url': 'url1', 'img': 'img1'}, {'link': 2, 'url': 'url2', 'img': 'img2'}, {'link': 3, 'url': 'url3', 'img': 'img3'}]
 
 	return render_template("story_page.html", story=story, comments=comments, links=links)
 
@@ -395,6 +434,8 @@ def channelslist():
 	channels = [channel1, channel2, channel3]
 	'''
 
+	
+
 	return render_template("channels_list.html", channels=channels)
 
 @app.route("/storyslist")
@@ -402,6 +443,7 @@ def storyslist():
 
 	#Send a list of links to storys.
 
+	
 
 
 	return render_template("storys_list.html", storys=storys)
