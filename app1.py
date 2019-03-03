@@ -21,17 +21,18 @@ channel5 = {"title":"Dman's Channel", "author":"DMAN", "year": 2018, "text": "Th
 
 channels = [channel5, channel1, channel2, channel3, channel4]
 
-
-messages = []
-key = 'messages'
-
 def get_whatever(list_of_obj, key, new_list):
 	for c in list_of_obj:
 		if key in c:
 			for i in c[key]:
 				new_list.append(i)
 
-get_whatever(channels, key, messages)
+
+
+messages = []
+key1 = 'messages'
+
+get_whatever(channels, key1, messages)
 
 
 
@@ -55,25 +56,30 @@ print(f'Unfilter Messages 0:{messages}')
 
 
 storys = []
+key2 = 'storys'
+get_whatever(channels, key2, storys)
 
-
-
-
+'''
 for c in channels:
 	if 'storys' in c:
 		for i in c['storys']:
 			storys.append(i)
+'''
 
 
 print(f"Storys 0: {storys}")
 
 
 comments = []
+key3 = 'comments'
+get_whatever(storys, key3, comments)
 
+'''
 for s in storys:
 	if 'comments' in s:
 		for i in s['comments']:
 			comments.append(i)
+'''
 
 
 print(f"comments 0: {comments}")
@@ -146,15 +152,17 @@ texts = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam torto
 		"Home", "Caterory", "Create Category", "Create Channel", "Log Out", "Log In", "Register", "Channel Page", "Story Page", "List of News Links", "list of categories", "category:[happy,romantic,sad]", "'channel list':['Channel1', 'channel2', 'channel3', 'channel4', 'channel5']"]
 
 
-@app.route("/home")
-def home():
+@app.route("/category/<string:category_title>", methods=['GET', 'POST'])
+def home(category_title):
 
 	# Make Api call to NYT for Top Story's News links.
 	# Send list News links. 
 	#  return jsonify(f"{texts[3]} =======>>>>    {texts[0]}")
 
-	
-	res = requests.get("https://api.nytimes.com/svc/topstories/v2/technology.json", params={"api-key": os.getenv("API_KEY")})
+
+	print(f"category title: {category_title}")
+
+	res = requests.get(f"https://api.nytimes.com/svc/topstories/v2/{category_title}.json", params={"api-key": os.getenv("API_KEY")})
 		
 	if res.status_code != 200:
 		raise Exception("ERROR: API request unsuccessful.")
@@ -179,7 +187,7 @@ def category():
 	# html should 
 	#return jsonify(texts[4], texts[13], texts[14])
 
-	categories =  "arts, automobiles, books, business, fashion, food, health, home, insider, magazine, movies, national, nyregion, obituaries, opinion, politics, realestate, science, sports, sundayreview, technology, theater, tmagazine, travel, upshot, world"
+	categories =  "arts,automobiles,books,business,fashion,food,health,home,insider,magazine,movies,national,nyregion,obituaries,opinion,politics,realestate,science,sports,sundayreview,technology,theater,tmagazine,travel,upshot,world"
 
 	categorys = categories.split(',')
 
@@ -272,7 +280,7 @@ def channelPage(channel_title):
 	channel = {}
 	for c in channels:
 		if c['title'] == channel_title:
-			channel = (c)
+			channel = c
 
 	print(f'Unfilter Channel:{channel}')
 
