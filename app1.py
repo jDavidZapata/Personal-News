@@ -33,6 +33,8 @@ def get_whatever_dic (objs_list, key, value, new_dic):
 		for c in objs_list:
 			if value in c[key]:  
 				new_dic = c
+				print(f"new_dic = {new_dic}")
+				#return new_dic
 
 
 messages = []
@@ -292,13 +294,14 @@ def channelPage(channel_title):
 			if c[key] == value:
 				new_dic = c
 
+	'''
 	
-
-
+	'''
 	channel = {}
 	key4 = 'title'
 	value1 = channel_title
 	get_whatever_dic(channels, key4, value1, channel)
+	
 
 
 	'''
@@ -306,7 +309,7 @@ def channelPage(channel_title):
 	for c in channels:
 		if c['title'] == channel_title:
 			channel = c
-
+	
 
 	print(f'Unfilter Channel:{channel}')
 

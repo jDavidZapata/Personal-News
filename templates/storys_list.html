@@ -14,13 +14,13 @@
 {% block body %}
 
 
-<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-danger left">
+<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-warning left">
     <h2>Storys:</h2>
     <div class="row justify-content-end storys-list-info">
         {% for story in storys %}
         <div class="col-11 story-bottom story-list-info">
             <h2>*</h2>
-            <h4><a href="{{ url_for('storyPage', story_title=story.title) }}" class="badge badge-warning">{{story.title}}</a></h4>
+            <h4><a href="{{ url_for('storyPage', story_title=story.title) }}" class="badge badge-danger">{{story.title}}</a></h4>
             <h3>By {{story.author}}</h3>
             <h5>{{story.text}}</h5>
         </div>
