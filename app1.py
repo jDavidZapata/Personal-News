@@ -32,6 +32,7 @@ channel5 = {"title":"Dman's Channel", "author":"DMAN", "year": 2018, "text": "Th
 
 channels = [channel5, channel1, channel2, channel3, channel4]
 
+
 def get_whatever_list(list_of_obj, key, new_list):
 	for c in list_of_obj:
 		if key in c:
@@ -45,7 +46,8 @@ def get_whatever_dic (objs_list, key, value, new_dic):
 			if value in c[key]:  
 				new_dic = c
 				print(f"new_dic = {new_dic}")
-				#return new_dic
+				
+
 
 
 messages = []
@@ -54,61 +56,15 @@ key1 = 'messages'
 get_whatever_list(channels, key1, messages)
 
 
-'''
-messages = []
-
-def get_messages(channels):
-	for c in channels:
-		if 'messages' in c:
-			for i in c['messages']:
-				messages.append(i)
-
-get_messages(channels)
-'''
-		
-#messages = [channels[i]['messages'] if 'messages' in channels[i] else "No Messages." for i in range(len(channels))]
-
-print(f'Unfilter Messages 0:{messages}')
-
-
 storys = []
 key2 = 'storys'
 get_whatever_list(channels, key2, storys)
-
-'''
-for c in channels:
-	if 'storys' in c:
-		for i in c['storys']:
-			storys.append(i)
-'''
-
-
-print(f"Storys 0: {storys}")
 
 
 comments = []
 key3 = 'comments'
 get_whatever_list(storys, key3, comments)
 
-'''
-for s in storys:
-	if 'comments' in s:
-		for i in s['comments']:
-			comments.append(i)
-'''
-
-
-print(f"comments 0: {comments}")
-
-
-
-storys_0 = [{"title": "A story", "text": "this is my first story."},{"title": "Another story", "text": "this is my second story."} ]
-
-messages_0 = [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}]
-
-story_0 = {'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}
-
-comments_0 = [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}]
 
 texts = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam tortor mauris, maximus semper volutpat vitae, varius placerat dui. Nunc consequat dictum est, at vestibulum est hendrerit at. Mauris suscipit neque ultrices nisl interdum accumsan. Sed euismod, ligula eget tristique semper, lectus est pellentesque dui, sit amet rhoncus leo mi nec orci. Curabitur hendrerit, est in ultricies interdum, lacus lacus aliquam mauris, vel vestibulum magna nisl id arcu. Cras luctus tellus ac convallis venenatis. Cras consequat tempor tincidunt. Proin ultricies purus mauris, non tempor turpis mollis id. Nam iaculis risus mauris, quis ornare neque semper vel.",
 		"Praesent euismod auctor quam, id congue tellus malesuada vitae. Ut sed lacinia quam. Sed vitae mattis metus, vel gravida ante. Praesent tincidunt nulla non sapien tincidunt, vitae semper diam faucibus. Nulla venenatis tincidunt efficitur. Integer justo nunc, egestas eget dignissim dignissim, fermentum ac sapien. Suspendisse non libero facilisis, dictum nunc ut, tincidunt diam.",
@@ -127,37 +83,11 @@ def index():
 	data = res.json()
 
 	results = data['results']
-
 	
-	'''
-	result = []
-	r = {}
-	i = 0
-
-	for i in range(len(results)):
-		
-		r['section'] = (results[i]['section'])
-		r['title'] = (results[i]['title'])
-		r['abstract'] = (results[i]['abstract'])
-		r['url'] = (results[i]['url'])
-		
-		result.append(r)
-
-	'''
-	#r = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : results[i]['multimedia'][2]} for i in range(len(results))]
-
-	# result = [x for x in results[range(len(results))]]
-
-	#results = data['results'][0]['title']
-
-
 	links = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 
 			'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] 
 			else results[i]['multimedia']) } for i in range(len(results))]
 	
-
-	#print(storys)
-
 	return render_template("index.html", links=links)
 
 
@@ -167,8 +97,7 @@ def home(category_title):
 
 	# Make Api call to NYT for Top Story's News links.
 	# Send list News links. 
-	#  return jsonify(f"{texts[3]} =======>>>>    {texts[0]}")
-
+	#  return jsonify(dict{key:value}===>(request('category_title':{'technology':[', ']})))
 
 	print(f"category title: {category_title}")
 
@@ -181,9 +110,8 @@ def home(category_title):
 
 	results = data['results']
 
-	links = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] else results[i]['multimedia']) } for i in range(len(results))]
-
-	#print(storys)
+	links = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 
+			'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] else results[i]['multimedia']) } for i in range(len(results))]
 
 	return render_template("index.html", links=links)
 	
@@ -200,8 +128,6 @@ def category():
 	categories =  "arts,automobiles,books,business,fashion,food,health,home,insider,magazine,movies,national,nyregion,obituaries,opinion,politics,realestate,science,sports,sundayreview,technology,theater,tmagazine,travel,upshot,world"
 
 	categorys = categories.split(',')
-
-	print(categorys)
 
 	return render_template("category.html", categorys=categorys)
 
@@ -276,63 +202,15 @@ def channelPage(channel_title):
 	#return jsonify(texts[10])
 
 	#ch = [(channels[i] if channel_title in channels[i]['title'] else None) for i in range(len(channels))]
-	
-	
-	'''
-	channel = []
-	print(f"Unfilter Channel:{ch}") 
-	print()
-
-	for s in ch:				
-		if s != None:
-			channel.append(s)
-	
-	'''
-
-	'''
-
-	def get_whatever_dic (objs_list, key, value, new_dic):
-		for c in objs_list:
-			if c[key] == value:
-				new_dic = c
-
-	'''
-	
-	'''
-	channel = {}
-	key4 = 'title'
-	value1 = channel_title
-	get_whatever_dic(channels, key4, value1, channel)
-	
-
-
-	'''
+		
 	channel = {}
 	for c in channels:
 		if c['title'] == channel_title:
 			channel = c
-	
+		
 
-	print(f'Unfilter Channel:{channel}')
+	messages = chnnel['messages'] if 'messages' in channel else "No Messages."
 
-	ch = channel
-
-
-
-	'''
-	messages = []
-
-
-	if 'messages' in channel[0]:
-			messages.append(channel[0]['messages'])
-
-	'''
-	
-	#messages = channel[0]['messages'] if 'messages' in channel[0] else "No Messages."
-
-	messages = ch['messages'] if 'messages' in ch else "No Messages."
-
-	#storys = channel[0]['storys'] if 'storys' in channel[0] else "No Story's."
 	storys = channel['storys'] if 'storys' in channel else "No Story's."
 	
 	
@@ -342,25 +220,12 @@ def channelPage(channel_title):
 		info = {}	
 
 
-	print(f"Messages: {messages}")
-
-	print(f"Filter Channel: {ch}")
-
-	print(f"Story's: {storys}")
-
-	print(f"Channel info: {info}")
-
 	if channel == None:
 
 		error = "No Channel"
 
 		return render_template("channels_list.html", error=error)
 
-	'''
-	channel = {"title":"My Channel", "author":"Juan David", "year": 2019, "text": "This is My Channel."}
-	storys = [{"title": "A story", "text": "this is my first story."},{"title": "Another story", "text": "this is my second story."} ]
-	messages = [{"text":"hello, 1st message"}, {"text":"world, 2nd message"}, {"text":"And this is the 3rd message."}]
-	'''
 
 	return render_template("channel_page.html", channel=channel, messages=messages, storys=storys, info=info)
 
@@ -376,48 +241,18 @@ def storyPage(story_title):
 	# for link just save the url
 	#return jsonify(texts[11])
 	
-	'''
-	story = []
-
-	for s in storys:
-		if s['id'] == story_id:
-			story.append(s)
-	
-
-	print(f'Unfilter Story:{story}')
-
-
-	'''
 	print(f"title ==== {story_title}")
-	print(f"@@@======>>Storys{storys}")
 
-	'''
-	story = {}
-	key5 = 'title'
-	value2 = story_title
-	get_whatever_dic(storys, key5, value2, story)
-	
-
-	'''
 	story = {}
 	for s in storys:
 		if s['title'] == story_title:
 			story = s
 	
-
-	print(f'Unfilter storryy:{story}')
-
 	
 	comments = story['comments'] if 'comments' in story else "No Comments."
 
 	links = story['links'] if 'links' in story else "No Links."
 	
-	print(f"Filter comments: {comments}")
-
-	#story = {'title':'My Story', 'author':'Juan David', 'year': 2019, 'text': 'This is my first Story.'}
-	#comments = [{"text":"1st. comment. hello"}, {"text":"2nd. comment. world"}, {"text":"3. comment. "}, {"text":"4. comment. "}, {"text":"5. comment. hello"}, {"text":"6. comment. world"}]
-	#links = [{'link': 1, 'url': 'url1', 'img': 'img1'}, {'link': 2, 'url': 'url2', 'img': 'img2'}, {'link': 3, 'url': 'url3', 'img': 'img3'}]
-
 	return render_template("story_page.html", story=story, comments=comments, links=links)
 
 
@@ -426,16 +261,6 @@ def channelslist():
 
 	#Send a list of links to channels.
 	# link
-	'''
-	channel1 = {"title":"My Channel", "author":"Juan David", "year": 2019, "text": "This is My Channel."}
-
-	channel2 = {"title":"Daves Channel", "author":"Dave", "year": 2019, "text": "This is daves Channel."}
-
-	channel3 = {"title":"juans Channel", "author":"Juan", "year": 2019, "text": "This is Juans Channel."}
-
-	channels = [channel1, channel2, channel3]
-	'''
-
 	
 
 	return render_template("channels_list.html", channels=channels)
@@ -446,8 +271,6 @@ def storyslist():
 	#Send a list of links to storys.
 
 	
-
-
 	return render_template("storys_list.html", storys=storys)
 	
 
