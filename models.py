@@ -53,8 +53,9 @@ class Channel(db.Model):
     title = db.Column(db.String, nullable=False, unique=True)
     text = db.Column(db.Text, nullable=False)
     time = db.Column(db.Integer, nullable=False)
-    storys = db.relationship("Story", backref="story", lazy=True)
-    messages = db.relationship("Message", backref="message", lazy=True)
+    storys = db.relationship("Story", backref="channel", lazy=True)
+    messages = db.relationship("Message", backref="channel", lazy=True)
+    user = db.relationship("User", backref=backref("channel", uselist=False), lazy=True)
 
     def __repr__(self):
         return '<Channel title: %r>' % self.title
@@ -79,9 +80,9 @@ class Story(db.Model):
     title = db.Column(db.String, nullable=False, unique=True)
     story_text = db.Column(db.Text, nullable=False)
     time = db.Column(db.Integer, nullable=False)
-    user_= db.relationship("User", backref="user", lazy=True)
-    comments = db.relationship("Comment", backref="comment", lazy=True)
-    links = db.relationship("Link", backref="link", lazy=True)
+    user= db.relationship("User", backref=backref("story", uselist=False), lazy=True)
+    comments = db.relationship("Comment", backref="story", lazy=True)
+    links = db.relationship("Link", backref="story", lazy=True)
 
     def add_comment_(self, user_id, story_id, comment_text, time):
         c = Comment(user_id=user_id, story_id=self.id, comment_text=comment_text, time=time)
@@ -105,6 +106,7 @@ class Message(db.Model):
     channel_id = db.Column(db.Integer, db.ForeignKey("channels.id"), nullable=False)
     message_text = db.Column(db.Text, nullable=False)
     time = db.Column(db.Integer, nullable=False)
+    user = db.relationship("User", backref=backref("message", uselist=False), lazy=True)
 
     def __repr__(self):
         return '<Message: %r>' % self.message_text
@@ -116,6 +118,7 @@ class Comment(db.Model):
     story_id = db.Column(db.Integer, db.ForeignKey("storys.id"), nullable=False)
     commet_text = db.Column(db.Text, nullable=False)
     time = db.Column(db.Integer, nullable=False)
+    user = db.relationship("User", backref=backref("comment", uselist=False), lazy=True)
 
     def __repr__(self):
         return '<Comment: %r>' % self.comment_text
@@ -128,6 +131,7 @@ class Link(db.Model):
     story_id = db.Column(db.Integer, db.ForeignKey("storys.id"), nullable=False)
     text = db.Column(db.Text, nullable=False)
     url = db.Column(db.String, nullable=False)
+    user = db.relationship("User", backref=backref("link", uselist=False), lazy=True)
 
     def __repr__(self):
         return '<Link: %r>' % self.url
