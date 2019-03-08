@@ -12,36 +12,43 @@ class User(db.Model):
     name = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
+    time = db.Column(db.Integer, nullable=False)
     channel = db.relationship("Channel", backref="user", lazy=True)
     storys = db.relationship("Story", backref="user", lazy=True)
     messages = db.relationship("Message", backref="user", lazy=True)
+
+    def __init__(self, name, password, email):
+        self.name = name
+        self.password = password
+        self.email = email
+
 
 
     def __repr__(self):
         return '<User %r>' % self.name
 
-    def add_channel(self, user_id, title, text, time):
-        c = Channel(user_id=self.id, title=title, text=text, time=time)
+    def add_channel(self, user_id, title, text, user):
+        c = Channel(user_id=self.id, title=title, text=text, user=self)
         db.session.add(c)
         db.session.commit()
 
-    def add_story(self, user_id, channel_id, title, story_text, time):
-        s = Story(user_id=self.id, channel_id=channel_id, title=title, story_text=story_text, time=time)
+    def add_story(self, user_id, channel_id, title, story_text, user, channel):
+        s = Story(user_id=self.id, channel_id=channel_id, title=title, story_text=story_text, user=self, channel=channel)
         db.session.add(s)
         db.session.commit()
 
-    def add_message(self, user_id, channel_id, message_text, time):
-        m = Message(user_id=self.id, channel_id=channel_id, message_text=message_text, time=time)
+    def add_message(self, user_id, channel_id, message_text, user, channel):
+        m = Message(user_id=self.id, channel_id=channel_id, message_text=message_text, user=self, channel=channel)
         db.session.add(m)
         db.session.commit()
 
-    def add_comment(self, user_id, story_id, comment_text, time):
-        c = Comment(user_id=self.id, story_id=story_id, comment_text=comment_text, time=time)
+    def add_comment(self, user_id, story_id, comment_text, user, story):
+        c = Comment(user_id=self.id, story_id=story_id, comment_text=comment_text, user=self, story=story)
         db.session.add(c)
         db.session.commit()
 
-    def add_link(self, user_id, story_id, url, text):
-        l = Link(user_id=self.id, story_id=story_id, url=url, text=text)
+    def add_link(self, user_id, story_id, text, url, user, story):
+        l = Link(user_id=self.id, story_id=story_id, text=text, url=url, user=self, story=story)
         db.session.add(l)
         db.session.commit()
 
@@ -57,17 +64,23 @@ class Channel(db.Model):
     messages = db.relationship("Message", backref="channel", lazy=True)
     user = db.relationship("User", backref=backref("channel", uselist=False), lazy=True)
 
+    def __init__(self, user_id, title, text, user):
+        self.user_id = user_id
+        self.title = title
+        self.text = text
+        self.user = user
+
     def __repr__(self):
         return '<Channel title: %r>' % self.title
 
 
-    def add_story_(self, user_id, channel_id, title, story_text, time):
-        s = Story(user_id=user_id, channel_id=self.id, title=title, story_text=story_text, time=time)
+    def add_story_(self, user_id, channel_id, title, story_text, user, channel):
+        s = Story(user_id=user_id, channel_id=self.id, title=title, story_text=story_text, user=user, channel=self)
         db.session.add(s)
         db.session.commit()
 
-    def add_message_(self, user_id, channel_id, message_text, time):
-        m = Message(user_id=user_id, channel_id=self.id, message_text=message_text, time=time)
+    def add_message_(self, user_id, channel_id, message_text, user, channel):
+        m = Message(user_id=user_id, channel_id=self.id, message_text=message_text, user=user, channel=self)
         db.session.add(m)
         db.session.commit()
 
@@ -81,16 +94,26 @@ class Story(db.Model):
     story_text = db.Column(db.Text, nullable=False)
     time = db.Column(db.Integer, nullable=False)
     user= db.relationship("User", backref=backref("story", uselist=False), lazy=True)
+    channel= db.relationship("Channel", backref=backref("story", uselist=False), lazy=True)
     comments = db.relationship("Comment", backref="story", lazy=True)
     links = db.relationship("Link", backref="story", lazy=True)
 
-    def add_comment_(self, user_id, story_id, comment_text, time):
-        c = Comment(user_id=user_id, story_id=self.id, comment_text=comment_text, time=time)
+    def __init__(self, user_id, channel_id, title, story_text, user, channel):
+        self.user_id = user_id
+        self.channel_id =channel_id
+        self.title = title
+        self.story_text = story_text
+        self.user = user
+        self.channel = channel
+
+
+    def add_comment_(self, user_id, story_id, comment_text, user, story):
+        c = Comment(user_id=user_id, story_id=self.id, comment_text=comment_text, user=user, story=self)
         db.session.add(c)
         db.session.commit()
 
-    def add_link_(self, user_id, story_id, url, text):
-        l = Link(user_id=user_id, story_id=self.id, url=url, text=text)
+    def add_link_(self, user_id, story_id, text, url, user, story):
+        l = Link(user_id=user_id, story_id=self.id, text=text, url=url, user=user, story=self)
         db.session.add(l)
         db.session.commit()
 
@@ -107,6 +130,15 @@ class Message(db.Model):
     message_text = db.Column(db.Text, nullable=False)
     time = db.Column(db.Integer, nullable=False)
     user = db.relationship("User", backref=backref("message", uselist=False), lazy=True)
+    channel = db.relationship("Channel", backref=backref("message", uselist=False), lazy=True)
+
+    def __init__(self, user_id, channel_id, message_text, user, channel):
+        self.user_id = user_id
+        self.channel_id =channel_id
+        self.message_text = message_text
+        self.user = user
+        self.channel = channel
+
 
     def __repr__(self):
         return '<Message: %r>' % self.message_text
@@ -119,6 +151,15 @@ class Comment(db.Model):
     commet_text = db.Column(db.Text, nullable=False)
     time = db.Column(db.Integer, nullable=False)
     user = db.relationship("User", backref=backref("comment", uselist=False), lazy=True)
+    story = db.relationship("Story", backref=backref("comment", uselist=False), lazy=True)
+
+    def __init__(self, user_id, story_id, comment_text, user, story):
+        self.user_id = user_id
+        self.story_id =story_id
+        self.comment_text = comment_text
+        self.user = user
+        self.story = story
+
 
     def __repr__(self):
         return '<Comment: %r>' % self.comment_text
@@ -132,6 +173,17 @@ class Link(db.Model):
     text = db.Column(db.Text, nullable=False)
     url = db.Column(db.String, nullable=False)
     user = db.relationship("User", backref=backref("link", uselist=False), lazy=True)
+    story = db.relationship("Story", backref=backref("link", uselist=False), lazy=True)
+
+
+
+    def __init__(self, user_id, story_id, text, url, user, story):
+        self.user_id = user_id
+        self.story_id =story_id
+        self.text = text
+        self.url = url
+        self.user = user
+        self.story = story
 
     def __repr__(self):
         return '<Link: %r>' % self.url
