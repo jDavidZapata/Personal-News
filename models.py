@@ -62,7 +62,7 @@ class Channel(db.Model):
     time = db.Column(db.Integer, nullable=False)
     storys = db.relationship("Story", backref="channel", lazy=True)
     messages = db.relationship("Message", backref="channel", lazy=True)
-    user = db.relationship("User", backref=backref("channel", uselist=False), lazy=True)
+    user = db.relationship("User", backref="channel", uselist=False, lazy=True)
 
     def __init__(self, user_id, title, text, user):
         self.user_id = user_id
@@ -93,8 +93,8 @@ class Story(db.Model):
     title = db.Column(db.String, nullable=False, unique=True)
     story_text = db.Column(db.Text, nullable=False)
     time = db.Column(db.Integer, nullable=False)
-    user= db.relationship("User", backref=backref("story", uselist=False), lazy=True)
-    channel= db.relationship("Channel", backref=backref("story", uselist=False), lazy=True)
+    user = db.relationship("User", backref="story", uselist=False, lazy=True)
+    channel = db.relationship("Channel", backref="story", uselist=False, lazy=True)
     comments = db.relationship("Comment", backref="story", lazy=True)
     links = db.relationship("Link", backref="story", lazy=True)
 
@@ -129,8 +129,8 @@ class Message(db.Model):
     channel_id = db.Column(db.Integer, db.ForeignKey("channels.id"), nullable=False)
     message_text = db.Column(db.Text, nullable=False)
     time = db.Column(db.Integer, nullable=False)
-    user = db.relationship("User", backref=backref("message", uselist=False), lazy=True)
-    channel = db.relationship("Channel", backref=backref("message", uselist=False), lazy=True)
+    user = db.relationship("User", backref="message", uselist=False, lazy=True)
+    channel = db.relationship("Channel", backref="message", uselist=False, lazy=True)
 
     def __init__(self, user_id, channel_id, message_text, user, channel):
         self.user_id = user_id
@@ -150,8 +150,8 @@ class Comment(db.Model):
     story_id = db.Column(db.Integer, db.ForeignKey("storys.id"), nullable=False)
     commet_text = db.Column(db.Text, nullable=False)
     time = db.Column(db.Integer, nullable=False)
-    user = db.relationship("User", backref=backref("comment", uselist=False), lazy=True)
-    story = db.relationship("Story", backref=backref("comment", uselist=False), lazy=True)
+    user = db.relationship("User", backref="comment", uselist=False, lazy=True)
+    story = db.relationship("Story", backref="comment", uselist=False, lazy=True)
 
     def __init__(self, user_id, story_id, comment_text, user, story):
         self.user_id = user_id
@@ -172,8 +172,8 @@ class Link(db.Model):
     story_id = db.Column(db.Integer, db.ForeignKey("storys.id"), nullable=False)
     text = db.Column(db.Text, nullable=False)
     url = db.Column(db.String, nullable=False)
-    user = db.relationship("User", backref=backref("link", uselist=False), lazy=True)
-    story = db.relationship("Story", backref=backref("link", uselist=False), lazy=True)
+    user = db.relationship("User", backref="link", uselist=False, lazy=True)
+    story = db.relationship("Story", backref="link", uselist=False, lazy=True)
 
 
 
