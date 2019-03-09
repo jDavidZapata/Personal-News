@@ -191,7 +191,7 @@
   <script src="{{ url_for('static', filename='index.js') }}"></script>
   {% endblock %}
 
-  <title>PNews --> {% block title %}{% endblock %}</title>
+  <title>PNews --> {% block title %}Your News{% endblock %}</title>
 </head>
 <body>
   <div class="container-fluid">
@@ -207,7 +207,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
-          
+
             {{ nav_link('index', 'Home') }}
             {{ nav_link('category', 'Category') }}
             {{ nav_link('channelslist', 'Channels') }}
