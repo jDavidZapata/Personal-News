@@ -1,9 +1,13 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, session, url_for, request, redirect, g
 import requests, json
 import os
 from models import *
+from config import DevelopmentConfig, Config
+
 
 app = Flask(__name__)
+
+app.config.from_object(os.environ['APP_SETTINGS'])
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
@@ -87,8 +91,76 @@ def index():
 	links = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 
 			'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] 
 			else results[i]['multimedia']) } for i in range(len(results))]
+
+    
 	
 	return render_template("index.html", links=links)
+
+
+
+@app.route('/register', methods=('GET', 'POST'))
+def register():
+    """ Register a new user. """
+        
+    error = None
+    success = None
+
+    
+    """ Check if the user is in session. """
+    user_id = session.get('user_id')
+    user_name = session.get('user_name')
+    
+    if ('user_id' in session):
+        g.user_id = user_id
+        g.user_name = user_name
+		
+    '''    
+        return redirect(url_for('index'))
+	'''
+    if request.method == 'POST':
+
+        name = request.form['name']
+        password = request.form['password']
+        email = request.form['email']
+
+        if not name:
+            error = 'Name is required.'
+        elif not password:
+            error = 'Password is required.'
+        elif not email:
+            error = 'Email is required.'
+
+        """ Make sure email is not already register. """
+        user = User.query.filter_by(email=email).first()
+
+        if user is not None:
+            error = 'User with email {0} is already registered.'.format(email)
+
+        if error is None:
+            """If the email is available, store it in the database and go to the login page. """
+
+            user = User(name=name, password=password, email=email)
+            db.session.add(user)
+            db.session.commit()
+
+            """Store the user id in a new session and return to the index"""
+
+            session.clear()
+            
+            session['user_id'] = user.id
+            session['user_name'] = user.name
+
+            g.user_id = user.id
+            g.user_name = user.name
+            
+            success = 'Thank You, For Signing Up.'
+            
+            return render_template('index.html', success=success)
+
+    return render_template('auth/register.html', error=error)
+
+
+
 
 
 
@@ -159,33 +231,76 @@ def createChannel():
 @app.route("/logout")
 def logout():
 
+	""" Long out user. """
 	#Log out user from session on server.
 	#Send list of News links'''
-	#return jsonify(texts[7])
+	success = None
 
-	return render_template("index.html")
+	"""Clear the current session."""
+	session.clear()
 
+	success = 'Your Now Loged Out.'
+
+	return redirect(url_for('index'))
+    
+
+	
 
 @app.route("/login")
 def login():
-
+	
+	""" Log in a registered user by adding the user id to the session. """
+	'''
 	#Display Form for Loging in user.
 	#If Post check to make sure user exists.
 	#If no User send "User doesnt exist."
 	#Else Log In user to session on server.
 	#Send back last place user was when loged out. 
+	'''
+	error = None
+	success = None
 	
-	return jsonify(texts[8])
+	
+	""" If the users id is in the session, then user already loged in. 
+	"""
+	user_id = session.get('user_id')
+	user_name = session.get('user_name')
+    
+	if ('user_id' in session):
+		g.user_id = user_id
+		g.user_name = user_name
 
-@app.route("/register")
-def register():
+		#return redirect(url_for('index'))
 
-	#Display Form for Registration.
-	#If Post Register User and add to database.
-	#Send back list of news links. '''
+	
+	if request.method == 'POST':
+		""" Get values from form. """
+		
+		email = request.form['email']
+		password = request.form['password']
 
-	return jsonify(texts[9])
+		""" Get user from database. """
+		user = User.query.filter(and_(User.email == email, User.password == (password))).first() 
 
+
+		if user is None:
+			error = 'Incorrect Email or Password.'
+
+		if error is None:
+			""" Store the user id in a new session and return to the index."""
+
+			session.clear()
+			session['user_id'] = user.id
+			session['user_name'] = user.name
+
+			g.user_id = user.id
+			g.user_name = user.name
+			
+			success = 'Your Now Signed In.'
+
+			return render_template('index.html', success=success, error=error)
+
+	return render_template('auth/login.html', error=error)
 
 
 
