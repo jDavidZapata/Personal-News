@@ -1,5 +1,5 @@
 import os
-
+from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -12,7 +12,7 @@ class User(db.Model):
     name = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
-    time = db.Column(db.Integer, nullable=False)
+    time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     channel = db.relationship("Channel", backref="user", lazy=True)
     storys = db.relationship("Story", backref="user", lazy=True)
     messages = db.relationship("Message", backref="user", lazy=True)
@@ -59,7 +59,7 @@ class Channel(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, unique=True)
     title = db.Column(db.String, nullable=False, unique=True)
     text = db.Column(db.Text, nullable=False)
-    time = db.Column(db.Integer, nullable=False)
+    time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     storys = db.relationship("Story", backref="channel", lazy=True)
     messages = db.relationship("Message", backref="channel", lazy=True)
     user = db.relationship("User", backref="channel", uselist=False, lazy=True)
@@ -92,7 +92,7 @@ class Story(db.Model):
     channel_id = db.Column(db.Integer, db.ForeignKey("channels.id"), nullable=False)
     title = db.Column(db.String, nullable=False, unique=True)
     story_text = db.Column(db.Text, nullable=False)
-    time = db.Column(db.Integer, nullable=False)
+    time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user = db.relationship("User", backref="story", uselist=False, lazy=True)
     channel = db.relationship("Channel", backref="story", uselist=False, lazy=True)
     comments = db.relationship("Comment", backref="story", lazy=True)
@@ -128,7 +128,7 @@ class Message(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     channel_id = db.Column(db.Integer, db.ForeignKey("channels.id"), nullable=False)
     message_text = db.Column(db.Text, nullable=False)
-    time = db.Column(db.Integer, nullable=False)
+    time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user = db.relationship("User", backref="message", uselist=False, lazy=True)
     channel = db.relationship("Channel", backref="message", uselist=False, lazy=True)
 
@@ -149,7 +149,7 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     story_id = db.Column(db.Integer, db.ForeignKey("storys.id"), nullable=False)
     commet_text = db.Column(db.Text, nullable=False)
-    time = db.Column(db.Integer, nullable=False)
+    time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user = db.relationship("User", backref="comment", uselist=False, lazy=True)
     story = db.relationship("Story", backref="comment", uselist=False, lazy=True)
 

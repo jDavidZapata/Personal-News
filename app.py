@@ -2,12 +2,13 @@ from flask import Flask, render_template, jsonify, session, url_for, request, re
 import requests, json
 import os
 from models import *
-from config import DevelopmentConfig, Config
-
+from forms import RegistrationForm
+from config import Config
 
 app = Flask(__name__)
 
 app.config.from_object(os.environ['APP_SETTINGS'])
+#app.config.from_object(Config)
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
@@ -17,6 +18,7 @@ if not os.getenv("DATABASE_URL"):
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
+
 db.init_app(app)
 
 
@@ -98,6 +100,24 @@ def index():
 
 
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    '''
+	if current_user.is_authenticated:
+        return redirect(url_for('index'))
+	'''	
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(name=form.name.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('login'))
+    return render_template('auth/register.html', title='Register', form=form)
+
+
+'''
 @app.route('/register', methods=('GET', 'POST'))
 def register():
     """ Register a new user. """
@@ -114,9 +134,9 @@ def register():
         g.user_id = user_id
         g.user_name = user_name
 		
-    '''    
+    
         return redirect(url_for('index'))
-	'''
+	
     if request.method == 'POST':
 
         name = request.form['name']
@@ -158,91 +178,8 @@ def register():
             return render_template('index.html', success=success)
 
     return render_template('auth/register.html', error=error)
+'''
 
-
-
-
-
-
-@app.route("/category/<string:category_title>", methods=['GET', 'POST'])
-def home(category_title):
-
-	# Make Api call to NYT for Top Story's News links.
-	# Send list News links. 
-	#  return jsonify(dict{key:value}===>(request('category_title':{'technology':[', ']})))
-
-	print(f"category title: {category_title}")
-
-	res = requests.get(f"https://api.nytimes.com/svc/topstories/v2/{category_title}.json", params={"api-key": os.getenv("API_KEY")})
-		
-	if res.status_code != 200:
-		raise Exception("ERROR: API request unsuccessful.")
-				
-	data = res.json()
-
-	results = data['results']
-
-	links = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 
-			'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] else results[i]['multimedia']) } for i in range(len(results))]
-
-	return render_template("index.html", links=links)
-	
-
-
-@app.route("/category")
-def category():
-
-	#Send a list of links to categories.
-	# js will take responce and and display div with links to route that will search that category.
-	# html should 
-	#return jsonify(texts[4], texts[13], texts[14])
-
-	categories =  "arts,automobiles,books,business,fashion,food,health,home,insider,magazine,movies,national,nyregion,obituaries,opinion,politics,realestate,science,sports,sundayreview,technology,theater,tmagazine,travel,upshot,world"
-
-	categorys = categories.split(',')
-
-	return render_template("category.html", categorys=categorys)
-
-
-@app.route("/createCategory")
-def createCategory():
-
-	#Display Form for creating Categories.
-	#If Post then take form info and create category.
-	#If it already exists send list of stories.
-	#If it doesnt exist then send "Create or add a story" 
-
-
-	return jsonify(texts[5])
-
-@app.route("/createChannel")
-def createChannel():
-
-	#Display Form for creating Channel.
-	#Only one channel per user.
-	#If Post then take form info and create Channel.
-	#If it already exists send "Channel already taken."
-	#If it doesnt exist then, send 
-	#"Create or add a story to Your channel".
-	#And send a list of categories.
-	
-	return jsonify(texts[6])
-
-@app.route("/logout")
-def logout():
-
-	""" Long out user. """
-	#Log out user from session on server.
-	#Send list of News links'''
-	success = None
-
-	"""Clear the current session."""
-	session.clear()
-
-	success = 'Your Now Loged Out.'
-
-	return redirect(url_for('index'))
-    
 
 	
 
@@ -303,6 +240,106 @@ def login():
 	return render_template('auth/login.html', error=error)
 
 
+@app.route("/logout")
+def logout():
+
+	""" Long out user. """
+	#Log out user from session on server.
+	#Send list of News links'''
+	success = None
+
+	"""Clear the current session."""
+	session.clear()
+
+	success = 'Your Now Loged Out.'
+
+	return redirect(url_for('index'))
+
+    
+@app.route("/category")
+def category():
+
+	#Send a list of links to categories.
+	# js will take responce and and display div with links to route that will search that category.
+	# html should 
+	#return jsonify(texts[4], texts[13], texts[14])
+
+	categories =  "arts,automobiles,books,business,fashion,food,health,home,insider,magazine,movies,national,nyregion,obituaries,opinion,politics,realestate,science,sports,sundayreview,technology,theater,tmagazine,travel,upshot,world"
+
+	categorys = categories.split(',')
+
+	return render_template("category.html", categorys=categorys)
+
+
+@app.route("/channelslist")
+def channelslist():
+
+	#Send a list of links to channels.
+	# link
+	
+
+	return render_template("channels_list.html", channels=channels)
+
+@app.route("/storyslist")
+def storyslist():
+
+	#Send a list of links to storys.
+
+	
+	return render_template("storys_list.html", storys=storys)
+	
+
+
+@app.route("/category/<string:category_title>", methods=['GET', 'POST'])
+def home(category_title):
+
+	# Make Api call to NYT for Top Story's News links.
+	# Send list News links. 
+	#  return jsonify(dict{key:value}===>(request('category_title':{'technology':[', ']})))
+
+	print(f"category title: {category_title}")
+
+	res = requests.get(f"https://api.nytimes.com/svc/topstories/v2/{category_title}.json", params={"api-key": os.getenv("API_KEY")})
+		
+	if res.status_code != 200:
+		raise Exception("ERROR: API request unsuccessful.")
+				
+	data = res.json()
+
+	results = data['results']
+
+	links = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 
+			'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] else results[i]['multimedia']) } for i in range(len(results))]
+
+	return render_template("index.html", links=links)
+	
+
+
+@app.route("/createCategory")
+def createCategory():
+
+	#Display Form for creating Categories.
+	#If Post then take form info and create category.
+	#If it already exists send list of stories.
+	#If it doesnt exist then send "Create or add a story" 
+
+
+	return jsonify(texts[5])
+
+@app.route("/createChannel")
+def createChannel():
+
+	#Display Form for creating Channel.
+	#Only one channel per user.
+	#If Post then take form info and create Channel.
+	#If it already exists send "Channel already taken."
+	#If it doesnt exist then, send 
+	#"Create or add a story to Your channel".
+	#And send a list of categories.
+	
+	return jsonify(texts[6])
+
+
 
 @app.route("/channelPage/<string:channel_title>", methods=['GET', 'POST'])
 def channelPage(channel_title):
@@ -324,7 +361,7 @@ def channelPage(channel_title):
 			channel = c
 		
 
-	messages = chnnel['messages'] if 'messages' in channel else "No Messages."
+	messages = channel['messages'] if 'messages' in channel else "No Messages."
 
 	storys = channel['storys'] if 'storys' in channel else "No Story's."
 	
@@ -371,23 +408,7 @@ def storyPage(story_title):
 	return render_template("story_page.html", story=story, comments=comments, links=links)
 
 
-@app.route("/channelslist")
-def channelslist():
 
-	#Send a list of links to channels.
-	# link
-	
-
-	return render_template("channels_list.html", channels=channels)
-
-@app.route("/storyslist")
-def storyslist():
-
-	#Send a list of links to storys.
-
-	
-	return render_template("storys_list.html", storys=storys)
-	
 
 
 	

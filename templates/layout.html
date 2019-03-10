@@ -246,11 +246,12 @@
 
     {% endif %}
 
-    {% block content %}{% endblock %}
+    
 
     <div id="container" class="container-fluid content">
       <div class="row">
-
+      
+      {% block content %}{% endblock %}
       {% block body %}{% endblock %}
 
       </div>
