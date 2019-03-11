@@ -214,18 +214,20 @@
             {{ nav_link('storyslist', 'Storys') }}
             {{ nav_link('createCategory', 'Create Category') }}
             {{ nav_link('createChannel', 'Create Channel') }}
+            {% if current_user.is_anonymous %}
             {{ nav_link('register', 'Register') }}
             {{ nav_link('login', 'Log In') }}
+            {% else %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('channelPage', channel_title=current_user.channel.title) }}" data-page=channelPage>My channel</a>
+            </li>           
             {{ nav_link('logout', 'Log Out') }}
-          
+            {% endif %}
           </ul>
           <span class="navbar-text">
             
-            Welcome
-            {{ current_user.username }}
-            {% if g.user %}
-            {{ (g.user['name']).upper() }}
-            !!!
+            Welcome 
+            {% if not current_user.is_anonymous %}
+            {{ current_user.username.upper() }}
             {% endif %}
             Always Be Amazing!!!
 

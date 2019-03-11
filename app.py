@@ -1,11 +1,13 @@
 from flask import Flask, render_template, jsonify, session, url_for, request, redirect, g, flash
 import requests, json
-import os
 from models import *
 from forms import RegistrationForm, LoginForm
 from config import Config
-from flask_login import LoginManager, current_user, login_user, logout_user
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_migrate import Migrate
+from werkzeug.urls import url_parse
+import os
+
 
 app = Flask(__name__)
 
@@ -25,6 +27,7 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 login_ = LoginManager(app)
+login_.login_view = 'login'
 
 @login_.user_loader
 def load_user(id):
@@ -273,7 +276,11 @@ def login():
 			return redirect(url_for('login'))
 		
 		login_user(user, remember=form.remember_me.data)
-		return redirect(url_for('index'))
+		next_page = request.args.get('next')
+		if not next_page or url_parse(next_page).netloc != '':
+			next_page = url_for('index')
+
+		return redirect(next_page)
 
 	return render_template('auth/login.html', title='Sign In', form=form)
 
@@ -353,6 +360,7 @@ def home(category_title):
 
 
 @app.route("/createCategory")
+@login_required
 def createCategory():
 
 	#Display Form for creating Categories.
@@ -364,6 +372,7 @@ def createCategory():
 	return jsonify(texts[5])
 
 @app.route("/createChannel")
+@login_required
 def createChannel():
 
 	#Display Form for creating Channel.
@@ -390,7 +399,8 @@ def channelPage(channel_title):
 	#Send back Form for messages.(JS)
 	#return jsonify(texts[10])
 
-	#ch = [(channels[i] if channel_title in channels[i]['title'] else None) for i in range(len(channels))]
+	#ch = [(channels[i] if channel_title in channels[i]['title'] else None) for i in range(len(channels))] 
+	# channel = User.query.filter_by(users.channel.title=channel_title).first_or_404()
 		
 	channel = {}
 	for c in channels:
