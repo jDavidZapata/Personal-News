@@ -222,6 +222,7 @@
           <span class="navbar-text">
             
             Welcome
+            {{ current_user.username }}
             {% if g.user %}
             {{ (g.user['name']).upper() }}
             !!!
@@ -233,25 +234,32 @@
       </nav>
     </div>
 
-    {% if error %}
-
-    <h3>{{error}}</h3>
-
-    {% endif %}
-
-
-    {% if success %}
-
-    <h3>{{success}}</h3>
-
-    {% endif %}
-
-    
-
     <div id="container" class="container-fluid content">
       <div class="row">
-      
+
+      <div class="container">
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
+
+      {% if error %}
+      <h3>{{error}}</h3>
+      {% endif %}
+
+      {% if success %}
+      <h3>{{success}}</h3>
+      {% endif %}
+  
+    </div>
+
       {% block content %}{% endblock %}
+
       {% block body %}{% endblock %}
 
       </div>

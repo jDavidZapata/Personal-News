@@ -1,9 +1,11 @@
-from flask import Flask, render_template, jsonify, session, url_for, request, redirect, g
+from flask import Flask, render_template, jsonify, session, url_for, request, redirect, g, flash
 import requests, json
 import os
 from models import *
-from forms import RegistrationForm
+from forms import RegistrationForm, LoginForm
 from config import Config
+from flask_login import LoginManager, current_user, login_user, logout_user
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 
@@ -20,7 +22,17 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 
 db.init_app(app)
+migrate = Migrate(app, db)
 
+login_ = LoginManager(app)
+
+@login_.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+
+#login = LoginManager()
+#login_manager.init_app(app)
 
 channel = None
 
@@ -102,19 +114,23 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    '''
+	
 	if current_user.is_authenticated:
-        return redirect(url_for('index'))
-	'''	
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(name=form.name.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('login'))
-    return render_template('auth/register.html', title='Register', form=form)
+		return redirect(url_for('index'))
+		
+	form = RegistrationForm()
+	if form.validate_on_submit():
+
+		user = User(name=form.name.data, username=form.username.data, nohash_password=form.password.data, email=form.email.data)
+		#user.set_password(form.password.data)
+		db.session.add(user)
+		db.session.commit()
+		flash('Congratulations, you are now a registered user!')
+		print(form.data)
+
+		return redirect(url_for('login'))
+
+	return render_template('auth/register.html', title='Register', form=form)
 
 
 '''
@@ -182,18 +198,18 @@ def register():
 
 
 	
-
+'''
 @app.route("/login")
 def login():
 	
 	""" Log in a registered user by adding the user id to the session. """
-	'''
+	
 	#Display Form for Loging in user.
 	#If Post check to make sure user exists.
 	#If no User send "User doesnt exist."
 	#Else Log In user to session on server.
 	#Send back last place user was when loged out. 
-	'''
+	
 	error = None
 	success = None
 	
@@ -238,6 +254,28 @@ def login():
 			return render_template('index.html', success=success, error=error)
 
 	return render_template('auth/login.html', error=error)
+'''
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	if current_user.is_authenticated:
+		return redirect(url_for('index'))
+	form = LoginForm()
+	if form.validate_on_submit():
+
+		user = User.query.filter_by(email=form.email.data).first()
+
+		flash('Login requested for user {}, remember_me={}'.format(form.email.data, form.remember_me.data))
+		print(form.data)
+
+		if user is None or not user.check_password(form.password.data):
+			flash('Invalid email or password')
+			return redirect(url_for('login'))
+		
+		login_user(user, remember=form.remember_me.data)
+		return redirect(url_for('index'))
+
+	return render_template('auth/login.html', title='Sign In', form=form)
 
 
 @app.route("/logout")
@@ -246,13 +284,12 @@ def logout():
 	""" Long out user. """
 	#Log out user from session on server.
 	#Send list of News links'''
-	success = None
-
+	
 	"""Clear the current session."""
-	session.clear()
 
-	success = 'Your Now Loged Out.'
-
+	logout_user()
+	flash('Loging Out the User... Comeback soon...')
+	
 	return redirect(url_for('index'))
 
     

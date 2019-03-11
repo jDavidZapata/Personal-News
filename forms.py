@@ -4,15 +4,16 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, le
 from models import User
 
 class RegistrationForm(FlaskForm):
-    name = StringField('Username', validators=[DataRequired()])
+    name = StringField('Name', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
     submit = SubmitField('Register')
 
-    def validate_username(self, name):
-        user = User.query.filter_by(name=name.data).first()
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError('Please use a different username.')
 
@@ -20,20 +21,20 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
+    
 
-
-class loginForm(FlaskForm):
+class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
-class createChannelForm(FlaskForm):
+class CreateChannelForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     text = TextAreaField(u'Descriction', validators=[DataRequired(), length(max=200)])
     submit = SubmitField('Create Channel')
 
-class createStoryForm(FlaskForm):
+class CreateStoryForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     story_text = TextAreaField(u'Share Your Story', validators=[DataRequired(), length(max=400)])
     submit = SubmitField('Create Story')

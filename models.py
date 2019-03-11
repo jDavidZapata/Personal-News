@@ -2,30 +2,42 @@ import os
 from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+
 
 db = SQLAlchemy()
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
+    username = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
     time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    channel = db.relationship("Channel", backref="user", lazy=True)
-    storys = db.relationship("Story", backref="user", lazy=True)
-    messages = db.relationship("Message", backref="user", lazy=True)
+    channel = db.relationship("Channel", backref="channel_owner", lazy=True)
+    storys = db.relationship("Story", backref="story_owner", lazy=True)
+    messages = db.relationship("Message", backref="message_owner", lazy=True)
 
-    def __init__(self, name, password, email):
+    def __init__(self, name, username, nohash_password, email):
         self.name = name
-        self.password = password
+        self.username = username
+        self.password = generate_password_hash(nohash_password)
         self.email = email
 
 
-
     def __repr__(self):
-        return '<User %r>' % self.name
+        return '<User %r>' % self.username
+
+    
+    def set_password(self, nohash_password):
+        self.password = generate_password_hash(nohash_password)
+
+    def check_password(self, nohash_password):
+        return check_password_hash(self.password, nohash_password)
+
 
     def add_channel(self, user_id, title, text, user):
         c = Channel(user_id=self.id, title=title, text=text, user=self)
@@ -60,9 +72,9 @@ class Channel(db.Model):
     title = db.Column(db.String, nullable=False, unique=True)
     text = db.Column(db.Text, nullable=False)
     time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    storys = db.relationship("Story", backref="channel", lazy=True)
-    messages = db.relationship("Message", backref="channel", lazy=True)
-    user = db.relationship("User", backref="channel", uselist=False, lazy=True)
+    storys = db.relationship("Story", backref="channels_storys", lazy=True)
+    messages = db.relationship("Message", backref="channels_messages", lazy=True)
+    user = db.relationship("User", backref="channel_owner", uselist=False, lazy=True)
 
     def __init__(self, user_id, title, text, user):
         self.user_id = user_id
@@ -93,10 +105,10 @@ class Story(db.Model):
     title = db.Column(db.String, nullable=False, unique=True)
     story_text = db.Column(db.Text, nullable=False)
     time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user = db.relationship("User", backref="story", uselist=False, lazy=True)
-    channel = db.relationship("Channel", backref="story", uselist=False, lazy=True)
-    comments = db.relationship("Comment", backref="story", lazy=True)
-    links = db.relationship("Link", backref="story", lazy=True)
+    user = db.relationship("User", backref="story_owner", uselist=False, lazy=True)
+    channel = db.relationship("Channel", backref="story_channel", uselist=False, lazy=True)
+    comments = db.relationship("Comment", backref="storys_comments", lazy=True)
+    links = db.relationship("Link", backref="storys_links", lazy=True)
 
     def __init__(self, user_id, channel_id, title, story_text, user, channel):
         self.user_id = user_id
@@ -129,8 +141,8 @@ class Message(db.Model):
     channel_id = db.Column(db.Integer, db.ForeignKey("channels.id"), nullable=False)
     message_text = db.Column(db.Text, nullable=False)
     time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user = db.relationship("User", backref="message", uselist=False, lazy=True)
-    channel = db.relationship("Channel", backref="message", uselist=False, lazy=True)
+    user = db.relationship("User", backref="message_owner", uselist=False, lazy=True)
+    channel = db.relationship("Channel", backref="channel_message", uselist=False, lazy=True)
 
     def __init__(self, user_id, channel_id, message_text, user, channel):
         self.user_id = user_id
@@ -150,8 +162,8 @@ class Comment(db.Model):
     story_id = db.Column(db.Integer, db.ForeignKey("storys.id"), nullable=False)
     commet_text = db.Column(db.Text, nullable=False)
     time = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user = db.relationship("User", backref="comment", uselist=False, lazy=True)
-    story = db.relationship("Story", backref="comment", uselist=False, lazy=True)
+    user = db.relationship("User", backref="comment_owner", uselist=False, lazy=True)
+    story = db.relationship("Story", backref="story_comment", uselist=False, lazy=True)
 
     def __init__(self, user_id, story_id, comment_text, user, story):
         self.user_id = user_id
@@ -172,8 +184,8 @@ class Link(db.Model):
     story_id = db.Column(db.Integer, db.ForeignKey("storys.id"), nullable=False)
     text = db.Column(db.Text, nullable=False)
     url = db.Column(db.String, nullable=False)
-    user = db.relationship("User", backref="link", uselist=False, lazy=True)
-    story = db.relationship("Story", backref="link", uselist=False, lazy=True)
+    user = db.relationship("User", backref="link_owner", uselist=False, lazy=True)
+    story = db.relationship("Story", backref="link_story", uselist=False, lazy=True)
 
 
 
