@@ -30,7 +30,7 @@ login_ = LoginManager(app)
 def load_user(id):
     return User.query.get(int(id))
 
-
+print(os.environ['APP_SETTINGS'])
 #login = LoginManager()
 #login_manager.init_app(app)
 
