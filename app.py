@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify, session, url_for, request, re
 import requests, json
 from models import *
 from forms import RegistrationForm, LoginForm
-from config import Config
+from config import *
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_migrate import Migrate
 from werkzeug.urls import url_parse
@@ -11,17 +11,17 @@ import os
 
 app = Flask(__name__)
 
+#app.config.from_object(DevelopmentConfig)
 app.config.from_object(os.environ['APP_SETTINGS'])
-#app.config.from_object(Config)
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
     raise RuntimeError("DATABASE_URL is not set")
 
 # Set up database
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_ECHO"] = True
+#app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+#app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+#app.config["SQLALCHEMY_ECHO"] = True
 
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -33,9 +33,10 @@ login_.login_view = 'login'
 def load_user(id):
     return User.query.get(int(id))
 
+print(app.config)
+print()
+
 print(os.environ['APP_SETTINGS'])
-#login = LoginManager()
-#login_manager.init_app(app)
 
 channel = None
 
@@ -70,7 +71,6 @@ def get_whatever_dic (objs_list, key, value, new_dic):
 				
 
 
-
 messages = []
 key1 = 'messages'
 
@@ -86,11 +86,6 @@ comments = []
 key3 = 'comments'
 get_whatever_list(storys, key3, comments)
 
-
-texts = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam tortor mauris, maximus semper volutpat vitae, varius placerat dui. Nunc consequat dictum est, at vestibulum est hendrerit at. Mauris suscipit neque ultrices nisl interdum accumsan. Sed euismod, ligula eget tristique semper, lectus est pellentesque dui, sit amet rhoncus leo mi nec orci. Curabitur hendrerit, est in ultricies interdum, lacus lacus aliquam mauris, vel vestibulum magna nisl id arcu. Cras luctus tellus ac convallis venenatis. Cras consequat tempor tincidunt. Proin ultricies purus mauris, non tempor turpis mollis id. Nam iaculis risus mauris, quis ornare neque semper vel.",
-		"Praesent euismod auctor quam, id congue tellus malesuada vitae. Ut sed lacinia quam. Sed vitae mattis metus, vel gravida ante. Praesent tincidunt nulla non sapien tincidunt, vitae semper diam faucibus. Nulla venenatis tincidunt efficitur. Integer justo nunc, egestas eget dignissim dignissim, fermentum ac sapien. Suspendisse non libero facilisis, dictum nunc ut, tincidunt diam.",
-		"Morbi imperdiet nunc ac quam hendrerit faucibus. Morbi viverra justo est, ut bibendum lacus vehicula at. Fusce eget risus arcu. Quisque dictum porttitor nisl, eget condimentum leo mollis sed. Proin justo nisl, lacinia id erat in, suscipit ultrices nisi. Suspendisse placerat nulla at volutpat interdum. In porttitor condimentum est nec ultricies. Donec nec mollis neque, id dapibus sem.",
-		"Home", "Caterory", "Create Category", "Create Channel", "Log Out", "Log In", "Register", "Channel Page", "Story Page", "List of News Links", "list of categories", "category:[happy,romantic,sad]", "'channel list':['Channel1', 'channel2', 'channel3', 'channel4', 'channel5']"]
 
 
 @app.route("/")
@@ -117,12 +112,17 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-	
+	""" Register a new user. """
+	""" Check if is user is authenticated, then user already register. """
 	if current_user.is_authenticated:
 		return redirect(url_for('index'))
 		
 	form = RegistrationForm()
+	""" Get values from form. """
+	
 	if form.validate_on_submit():
+		""" Make sure email is not already register. """
+		"""If the email is available, store it in the database and go to the login page. """
 
 		user = User(name=form.name.data, username=form.username.data, nohash_password=form.password.data, email=form.email.data)
 		#user.set_password(form.password.data)
@@ -136,135 +136,21 @@ def register():
 	return render_template('auth/register.html', title='Register', form=form)
 
 
-'''
-@app.route('/register', methods=('GET', 'POST'))
-def register():
-    """ Register a new user. """
-        
-    error = None
-    success = None
 
-    
-    """ Check if the user is in session. """
-    user_id = session.get('user_id')
-    user_name = session.get('user_name')
-    
-    if ('user_id' in session):
-        g.user_id = user_id
-        g.user_name = user_name
-		
-    
-        return redirect(url_for('index'))
-	
-    if request.method == 'POST':
-
-        name = request.form['name']
-        password = request.form['password']
-        email = request.form['email']
-
-        if not name:
-            error = 'Name is required.'
-        elif not password:
-            error = 'Password is required.'
-        elif not email:
-            error = 'Email is required.'
-
-        """ Make sure email is not already register. """
-        user = User.query.filter_by(email=email).first()
-
-        if user is not None:
-            error = 'User with email {0} is already registered.'.format(email)
-
-        if error is None:
-            """If the email is available, store it in the database and go to the login page. """
-
-            user = User(name=name, password=password, email=email)
-            db.session.add(user)
-            db.session.commit()
-
-            """Store the user id in a new session and return to the index"""
-
-            session.clear()
-            
-            session['user_id'] = user.id
-            session['user_name'] = user.name
-
-            g.user_id = user.id
-            g.user_name = user.name
-            
-            success = 'Thank You, For Signing Up.'
-            
-            return render_template('index.html', success=success)
-
-    return render_template('auth/register.html', error=error)
-'''
-
-
-	
-'''
-@app.route("/login")
-def login():
-	
-	""" Log in a registered user by adding the user id to the session. """
-	
-	#Display Form for Loging in user.
-	#If Post check to make sure user exists.
-	#If no User send "User doesnt exist."
-	#Else Log In user to session on server.
-	#Send back last place user was when loged out. 
-	
-	error = None
-	success = None
-	
-	
-	""" If the users id is in the session, then user already loged in. 
-	"""
-	user_id = session.get('user_id')
-	user_name = session.get('user_name')
-    
-	if ('user_id' in session):
-		g.user_id = user_id
-		g.user_name = user_name
-
-		#return redirect(url_for('index'))
-
-	
-	if request.method == 'POST':
-		""" Get values from form. """
-		
-		email = request.form['email']
-		password = request.form['password']
-
-		""" Get user from database. """
-		user = User.query.filter(and_(User.email == email, User.password == (password))).first() 
-
-
-		if user is None:
-			error = 'Incorrect Email or Password.'
-
-		if error is None:
-			""" Store the user id in a new session and return to the index."""
-
-			session.clear()
-			session['user_id'] = user.id
-			session['user_name'] = user.name
-
-			g.user_id = user.id
-			g.user_name = user.name
-			
-			success = 'Your Now Signed In.'
-
-			return render_template('index.html', success=success, error=error)
-
-	return render_template('auth/login.html', error=error)
-'''
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+	""" Log in a registered user. """
+	"""If the users is authenticated, then user already loged in."""
+
 	if current_user.is_authenticated:
 		return redirect(url_for('index'))
+		
 	form = LoginForm()
+	""" Get values from form. """
+
 	if form.validate_on_submit():
+		""" Get User from DataBase using Email. """
 
 		user = User.query.filter_by(email=form.email.data).first()
 
@@ -274,8 +160,11 @@ def login():
 		if user is None or not user.check_password(form.password.data):
 			flash('Invalid email or password')
 			return redirect(url_for('login'))
-		
+
+		""" If there is A User, then log them in. """
 		login_user(user, remember=form.remember_me.data)
+
+		""" Redirect to the next page if there was one, else go to main page. """
 		next_page = request.args.get('next')
 		if not next_page or url_parse(next_page).netloc != '':
 			next_page = url_for('index')
@@ -289,11 +178,7 @@ def login():
 def logout():
 
 	""" Long out user. """
-	#Log out user from session on server.
-	#Send list of News links'''
 	
-	"""Clear the current session."""
-
 	logout_user()
 	flash('Loging Out the User... Comeback soon...')
 	
@@ -302,11 +187,7 @@ def logout():
     
 @app.route("/category")
 def category():
-
-	#Send a list of links to categories.
-	# js will take responce and and display div with links to route that will search that category.
-	# html should 
-	#return jsonify(texts[4], texts[13], texts[14])
+	""" List of Categories. """
 
 	categories =  "arts,automobiles,books,business,fashion,food,health,home,insider,magazine,movies,national,nyregion,obituaries,opinion,politics,realestate,science,sports,sundayreview,technology,theater,tmagazine,travel,upshot,world"
 
@@ -317,18 +198,14 @@ def category():
 
 @app.route("/channelslist")
 def channelslist():
-
-	#Send a list of links to channels.
-	# link
-	
+	""" List of channels. """
 
 	return render_template("channels_list.html", channels=channels)
 
+
 @app.route("/storyslist")
 def storyslist():
-
-	#Send a list of links to storys.
-
+	""" List of Storys. """
 	
 	return render_template("storys_list.html", storys=storys)
 	
@@ -336,9 +213,8 @@ def storyslist():
 
 @app.route("/category/<string:category_title>", methods=['GET', 'POST'])
 def home(category_title):
-
-	# Make Api call to NYT for Top Story's News links.
-	# Send list News links. 
+	""" List of news links. """
+	""" Make API call to NYT for Top Story's Section News links. """
 	#  return jsonify(dict{key:value}===>(request('category_title':{'technology':[', ']})))
 
 	print(f"category title: {category_title}")
@@ -351,12 +227,92 @@ def home(category_title):
 	data = res.json()
 
 	results = data['results']
-
+	
+	""" Send Lik Data. """
 	links = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 'url' : results[i]['url'], 
 			'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] else results[i]['multimedia']) } for i in range(len(results))]
 
 	return render_template("index.html", links=links)
 	
+
+
+
+
+@app.route("/channelPage/<string:channel_title>", methods=['GET', 'POST'])
+def channelPage(channel_title):
+	""" Channel Page. """
+	""" Route takes GET request with title string.
+		Looks for that string channel name and returns it.
+		Else returns channels page with channel not found error. """
+
+	#Send back list of news links on channel.
+	#Send back first 100 messages.
+	#Send back Form for messages.(JS)
+	#return jsonify(texts[10])
+
+	
+	""" Get Channel From DataBase if it exists. """	
+	# channel = User.query.filter_by(users.channel.title=channel_title).first_or_404()
+	channel = {}
+	for c in channels:
+		if c['title'] == channel_title:
+			channel = c
+		
+	
+	""" If there is no Channel, redirect to Channels list. """
+	if channel == None:
+
+		error = "No Channel"
+
+		return render_template("channels_list.html", error=error)
+
+
+	""" Channel Info. """
+	if channel:
+		info = {'title': channel['title'], 'year': channel['year'], 'author': channel['author'], 'text': channel['text']}
+	else:
+		info = {}	
+	
+	""" list of Messages from Channel. Send first 20. """
+	messages = channel['messages'] if 'messages' in channel else "No Messages."
+
+	""" List of Storys from Channel. Send first 20. """
+	storys = channel['storys'] if 'storys' in channel else "No Story's."
+
+	return render_template("channel_page.html", channel=channel, messages=messages, storys=storys, info=info)
+
+
+@app.route("/storyPage/<string:story_title>", methods=['GET', 'POST'])
+def storyPage(story_title):
+	""" Story Page. """	
+	""" Route takes GET request with title string.
+		Looks for that string story name and returns it.
+		Else returns storys page with story not found error.. """
+
+
+	print(f"title ==== {story_title}")
+
+	""" Get Story From DataBase if it exists. """	
+	story = {}
+	for s in storys:
+		if s['title'] == story_title:
+			story = s
+
+	""" If there is no Story, redirect to Storys list. """
+	if story == None:
+
+		error = "No Story"
+
+		return render_template("storys_list.html", error=error)
+
+	""" list of Comments from Story. Send first 20. """
+	comments = story['comments'] if 'comments' in story else "No Comments."
+
+	""" List of Links from Story. Send first 20. """
+	links = story['links'] if 'links' in story else "No Links."
+	
+	return render_template("story_page.html", story=story, comments=comments, links=links)
+
 
 
 @app.route("/createCategory")
@@ -369,7 +325,7 @@ def createCategory():
 	#If it doesnt exist then send "Create or add a story" 
 
 
-	return jsonify(texts[5])
+	return jsonify(storys)
 
 @app.route("/createChannel")
 @login_required
@@ -383,82 +339,9 @@ def createChannel():
 	#"Create or add a story to Your channel".
 	#And send a list of categories.
 	
-	return jsonify(texts[6])
+	return jsonify(channels)
 
 
-
-@app.route("/channelPage/<string:channel_title>", methods=['GET', 'POST'])
-def channelPage(channel_title):
-
-	# route takes GET request with a name string... 
-	# looks for that string channel name and returns it.
-	# else returns channels page with channel not found error.
-
-	#Send back list of news links on channel.
-	#Send back first 100 messages.
-	#Send back Form for messages.(JS)
-	#return jsonify(texts[10])
-
-	#ch = [(channels[i] if channel_title in channels[i]['title'] else None) for i in range(len(channels))] 
-	# channel = User.query.filter_by(users.channel.title=channel_title).first_or_404()
-		
-	channel = {}
-	for c in channels:
-		if c['title'] == channel_title:
-			channel = c
-		
-
-	messages = channel['messages'] if 'messages' in channel else "No Messages."
-
-	storys = channel['storys'] if 'storys' in channel else "No Story's."
-	
-	
-	if channel:
-		info = {'title': channel['title'], 'year': channel['year'], 'author': channel['author'], 'text': channel['text']}
-	else:
-		info = {}	
-
-
-	if channel == None:
-
-		error = "No Channel"
-
-		return render_template("channels_list.html", error=error)
-
-
-	return render_template("channel_page.html", channel=channel, messages=messages, storys=storys, info=info)
-
-
-@app.route("/storyPage/<string:story_title>", methods=['GET', 'POST'])
-def storyPage(story_title):	
-
-	# Display Story.
-	# take in <storyID>
-	#	Send back Story title, text.
-	#	Send back first 10 out of 100 comments.
-	#	send back Form for comment.(js)
-	# for link just save the url
-	#return jsonify(texts[11])
-	
-	print(f"title ==== {story_title}")
-
-	story = {}
-	for s in storys:
-		if s['title'] == story_title:
-			story = s
-	
-	
-	comments = story['comments'] if 'comments' in story else "No Comments."
-
-	links = story['links'] if 'links' in story else "No Links."
-	
-	return render_template("story_page.html", story=story, comments=comments, links=links)
-
-
-
-
-
-	
 
 
 if __name__ == "__main__":
