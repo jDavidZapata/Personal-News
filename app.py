@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, session, url_for, request, redirect, g, flash
 import requests, json
 from models import *
-from forms import RegistrationForm, LoginForm, CreateChannelForm
+from forms import RegistrationForm, LoginForm, CreateChannelForm, CreateStoryForm
 from config import *
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_migrate import Migrate
@@ -342,18 +342,17 @@ def createChannel():
 		
 		channel = Channel(user_id=current_user.id, title=form.title.data, text=form.text.data, user=current_user)
 		db.session.add(channel)
+
 		if form.message.data:
 			message = Message(user_id=current_user.id, channel_id=channel.id, message_text=form.message.data, user=current_user, channel=channel)
 			#message = channel.add_message_(user_id=current_user.id, channel_id=channel.id, message_text=form.message.data, user=current_user, channel=channel)
-			db.session.add(message)
-		
+			db.session.add(message)		
 		
 		db.session.commit()
-		flash('Congratulations, you Added Your Channel!')
-		
+		flash('Congratulations, you Added Your Channel!')		
 
 		print(current_user.channel)
-		
+
 		return jsonify(channel.user.name)
 		
 
@@ -371,6 +370,51 @@ def createChannel():
 @app.route("/createStory", methods=['GET', 'POST'])
 @login_required
 def createStory():
+	""" Create A Story. """
+			
+	form = CreateStoryForm()
+	""" Get values from form. """
+	
+	if form.validate_on_submit():
+		""" Check that User doesn't have a Story with same title. """
+				
+		print(form.data)
+		#st = Story.query.filter_by(user_id=current_user.id, title=form.title.data).first()
+		channel = Channel.query.filter_by(user=current_user).first()
+		if channel is None:
+			flash("You Don't Have A Channel.")
+			return redirect(url_for('createChannel'))
+
+
+		st = Story.query.filter_by(user_id=current_user.id, title=form.title.data).first()
+		
+		if st is not None:
+			flash('You Already Have A Story with this Title.')
+
+			return redirect(url_for('createStory'))
+		
+		
+		#story = current_user.add_story(user_id=current_user.id, channel_id=channel.id, title=form.title.data, story_text=form.text.data, user=current_user, channel=channel)
+		
+		story = Story(user_id=current_user.id, channel_id=channel.id, title=form.title.data, story_text=form.story_text.data, user=current_user, channel=channel)
+		print(f"Story ====> {story}")
+		db.session.add(story)
+
+		
+		if form.comment.data:
+			comment = Comment(user_id=current_user.id, story_id=story.id, comment_text=form.comment.data, user=current_user, story=story)
+			#comment = channel.add_comment_(user_id=current_user.id, story_id=story.id, comment_text=form.comment.data, user=current_user, story=story)
+			db.session.add(comment)
+			print(f"Comment ====> {comment}")		
+		
+		db.session.commit()
+		flash('Congratulations, you Added A Story!')		
+
+		
+		
+
+				
+		return jsonify(story.user.name, channel.title, story.title, comment.comment_text)
 
 	#Display Form for creating Categories.
 	#If Post then take form info and create category.
@@ -378,7 +422,8 @@ def createStory():
 	#If it doesnt exist then send "Create or add a story" 
 
 
-	return jsonify(storys)
+	#return jsonify(storys)
+	return render_template("story_create.html", form=form)
 
 
 if __name__ == "__main__":

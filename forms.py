@@ -53,4 +53,6 @@ class CreateChannelForm(FlaskForm):
 class CreateStoryForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     story_text = TextAreaField(u'Share Your Story', validators=[DataRequired(), length(max=400)])
+    comment = TextAreaField(u'Comment', validators=[length(max=200)])
+
     submit = SubmitField('Create Story')

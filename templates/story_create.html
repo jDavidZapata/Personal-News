@@ -1,0 +1,52 @@
+{% extends 'index.html' %}
+
+{% block header %}
+<h3>{% block title %}Create Story{% endblock %}</h3>
+{% endblock %}
+
+{% block sidecontent %}
+
+<div id="sidecontent" class="form sideform">
+  <form method="post" action="" novalidate>
+  {{ form.csrf_token }}
+    <div class="form-row justify-content-center align-items-center">
+      <div class="col">
+      
+        {{ form.title.label }}<br>
+        {{ form.title(size=40) }}<br>
+        {% for error in form.title.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
+      </div>
+
+      <div class="col">
+      
+        {{ form.story_text.label }}<br>
+        {{ form.story_text(size=400) }}<br>
+        {% for error in form.story_text.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
+      </div>
+
+
+      <div class="col">
+
+        {{ form.comment.label }}<br>
+        {{ form.comment(size=100) }}<br>
+        {% for error in form.comment.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
+      </div>
+
+     
+      <div class="col">
+        {{ form.submit() }}
+      </div>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
