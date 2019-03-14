@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, session, url_for, request, redirect, g, flash
 import requests, json
 from models import *
-from forms import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, CreateChannelForm
 from config import *
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_migrate import Migrate
@@ -199,6 +199,7 @@ def category():
 @app.route("/channelslist")
 def channelslist():
 	""" List of channels. """
+	""" Get all Channels From DataBase. """
 
 	return render_template("channels_list.html", channels=channels)
 
@@ -206,12 +207,14 @@ def channelslist():
 @app.route("/storyslist")
 def storyslist():
 	""" List of Storys. """
-	
+	""" Get Storys From DataBase. """
+
 	return render_template("storys_list.html", storys=storys)
 	
 
 
 @app.route("/category/<string:category_title>", methods=['GET', 'POST'])
+@login_required
 def home(category_title):
 	""" List of news links. """
 	""" Make API call to NYT for Top Story's Section News links. """
@@ -234,7 +237,6 @@ def home(category_title):
 
 	return render_template("index.html", links=links)
 	
-
 
 
 
@@ -287,7 +289,7 @@ def storyPage(story_title):
 	""" Story Page. """	
 	""" Route takes GET request with title string.
 		Looks for that string story name and returns it.
-		Else returns storys page with story not found error.. """
+		Else returns storys page with story not found error. """
 
 
 	print(f"title ==== {story_title}")
@@ -315,21 +317,45 @@ def storyPage(story_title):
 
 
 
-@app.route("/createCategory")
-@login_required
-def createCategory():
 
-	#Display Form for creating Categories.
-	#If Post then take form info and create category.
-	#If it already exists send list of stories.
-	#If it doesnt exist then send "Create or add a story" 
-
-
-	return jsonify(storys)
-
-@app.route("/createChannel")
+@app.route("/createChannel", methods=['GET', 'POST'])
 @login_required
 def createChannel():
+	""" Create A Channel. """
+			
+	form = CreateChannelForm()
+	""" Get values from form. """
+	
+	if form.validate_on_submit():
+		""" Check User doesnt already have a Channel. """
+		""" If User has Channel redirect to channel. """
+		
+		print(form.data)
+		
+		ch = Channel.query.filter_by(user=current_user).first()
+		if ch is not None:
+			flash('You Already Have A Channel.')
+			return redirect(url_for('createChannel'))
+		
+		
+		#channel = current_user.add_channel(user_id=current_user.id, title=form.title.data, text=form.text.data, user=current_user)
+		
+		channel = Channel(user_id=current_user.id, title=form.title.data, text=form.text.data, user=current_user)
+		db.session.add(channel)
+		if form.message.data:
+			message = Message(user_id=current_user.id, channel_id=channel.id, message_text=form.message.data, user=current_user, channel=channel)
+			#message = channel.add_message_(user_id=current_user.id, channel_id=channel.id, message_text=form.message.data, user=current_user, channel=channel)
+			db.session.add(message)
+		
+		
+		db.session.commit()
+		flash('Congratulations, you Added Your Channel!')
+		
+
+		print(current_user.channel)
+		
+		return jsonify(channel.user.name)
+		
 
 	#Display Form for creating Channel.
 	#Only one channel per user.
@@ -339,9 +365,20 @@ def createChannel():
 	#"Create or add a story to Your channel".
 	#And send a list of categories.
 	
-	return jsonify(channels)
+	return render_template("channel_create.html", form=form)
 
 
+@app.route("/createStory", methods=['GET', 'POST'])
+@login_required
+def createStory():
+
+	#Display Form for creating Categories.
+	#If Post then take form info and create category.
+	#If it already exists send list of stories.
+	#If it doesnt exist then send "Create or add a story" 
+
+
+	return jsonify(storys)
 
 
 if __name__ == "__main__":

@@ -1,10 +1,55 @@
-{% extends 'layout.html' %}
+{% extends 'index.html' %}
 
 {% block header %}
 <h3>{% block title %}Create Channel{% endblock %}</h3>
 {% endblock %}
 
-{% block content %}{% endblock %}
+{% block sidecontent %}
+
+<div id="sidecontent" class="form sideform">
+  <form method="post" action="" novalidate>
+  {{ form.csrf_token }}
+    <div class="form-row justify-content-center align-items-center">
+      <div class="col">
+      
+        {{ form.title.label }}<br>
+        {{ form.title(size=40) }}<br>
+        {% for error in form.title.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
+      </div>
+
+      <div class="col">
+      
+        {{ form.text.label }}<br>
+        {{ form.text(size=100) }}<br>
+        {% for error in form.text.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
+      </div>
+
+
+      <div class="col">
+
+        {{ form.message.label }}<br>
+        {{ form.message(size=100) }}<br>
+        {% for error in form.message.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+
+      </div>
+
+     
+      <div class="col">
+        {{ form.submit() }}
+      </div>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
 
 
 extend layout 
