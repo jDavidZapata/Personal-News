@@ -76,12 +76,12 @@ class Channel(db.Model):
     messages = db.relationship("Message", backref="channels_messages", lazy=True)
     user = db.relationship("User", backref="channel_owner", uselist=False, lazy=True)
 
-    def __init__(self, user_id, title, text, user):
+    def __init__(self, user_id, title, text, user, storys=[], messages=[]):
         self.user_id = user_id
         self.title = title
         self.text = text
         self.user = user
-
+        
     def __repr__(self):
         return '<Channel title: %r>' % self.title
 

@@ -201,6 +201,9 @@ def channelslist():
 	""" List of channels. """
 	""" Get all Channels From DataBase. """
 
+	channels = Channel.query.all()
+	print(f"channels =====>  {channels}")
+
 	return render_template("channels_list.html", channels=channels)
 
 
@@ -254,12 +257,14 @@ def channelPage(channel_title):
 
 	
 	""" Get Channel From DataBase if it exists. """	
-	# channel = User.query.filter_by(users.channel.title=channel_title).first_or_404()
+	channel = Channel.query.filter_by(title=channel_title).first_or_404()
+	
+	'''
 	channel = {}
 	for c in channels:
 		if c['title'] == channel_title:
 			channel = c
-		
+	'''	
 	
 	""" If there is no Channel, redirect to Channels list. """
 	if channel == None:
@@ -270,16 +275,19 @@ def channelPage(channel_title):
 
 
 	""" Channel Info. """
+	print(channel)
 	if channel:
-		info = {'title': channel['title'], 'year': channel['year'], 'author': channel['author'], 'text': channel['text']}
+		info = {'title': channel.title, 'author': channel.user.name, 'text': channel.text}
 	else:
 		info = {}	
 	
 	""" list of Messages from Channel. Send first 20. """
-	messages = channel['messages'] if 'messages' in channel else "No Messages."
+	messages = channel.messages 
+	print(messages)
 
 	""" List of Storys from Channel. Send first 20. """
-	storys = channel['storys'] if 'storys' in channel else "No Story's."
+	storys = channel.storys 
+	print(storys)
 
 	return render_template("channel_page.html", channel=channel, messages=messages, storys=storys, info=info)
 
@@ -293,8 +301,11 @@ def storyPage(story_title):
 
 
 	print(f"title ==== {story_title}")
+	print(f"title type =====> {type(story_title)}")
 
-	""" Get Story From DataBase if it exists. """	
+	""" Get Story From DataBase if it exists. """
+	#story = Story.query.filter_by(title=story_title).first_or_404()
+
 	story = {}
 	for s in storys:
 		if s['title'] == story_title:
@@ -308,9 +319,11 @@ def storyPage(story_title):
 		return render_template("storys_list.html", error=error)
 
 	""" list of Comments from Story. Send first 20. """
+	#comments = story.comments
 	comments = story['comments'] if 'comments' in story else "No Comments."
 
 	""" List of Links from Story. Send first 20. """
+	#links = story.links
 	links = story['links'] if 'links' in story else "No Links."
 	
 	return render_template("story_page.html", story=story, comments=comments, links=links)
@@ -410,11 +423,8 @@ def createStory():
 		db.session.commit()
 		flash('Congratulations, you Added A Story!')		
 
-		
-		
-
-				
-		return jsonify(story.user.name, channel.title, story.title, comment.comment_text)
+						
+		return jsonify(story.user.name, channel.title, story.title)
 
 	#Display Form for creating Categories.
 	#If Post then take form info and create category.

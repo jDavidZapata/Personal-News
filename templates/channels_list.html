@@ -21,7 +21,7 @@
         <div class="col-11 story-bottom channel-list-info">
             <h2>*</h2>
             <h4><a href="{{ url_for('channelPage', channel_title=channel.title) }}" class="badge badge-warning">{{channel.title}}</a></h4>
-            <h3>By {{channel.author}}</h3>
+            <h3>By {{channel.user.name}}</h3>
             <h5>{{channel.text}}</h5>
         </div>
         {% endfor %}

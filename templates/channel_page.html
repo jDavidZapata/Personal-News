@@ -50,10 +50,10 @@
         {% for story in storys %}
 
         <div class="col-12 channel-story">
-            
+            <h4><a href="{{ url_for('storyPage', story_title=str(story.title) }}" class="badge badge-danger">{{story.title}}</a></h4>
             <h4><a href="{{ url_for('storyPage', story_title=story.title) }}" class="badge badge-warning">Story # {{storys.index(story) + 1}}</a></h4>
             <h2 class="storys-title">Title: {{story.title}}</h2>
-            <h3>Story Description: *{{story.text}}</h3>
+            <h3>Story Description: *{{story.story_text}}</h3>
         </div>
         
         {% endfor %}
@@ -95,7 +95,7 @@
         <div class="col-12 channel-message message-box">
             
             <h4><a href="#" class="badge badge-warning">Message # {{messages.index(message) + 1}}</a></h4>
-            <h5><*User>{{message.text}}</h5>
+            <h5><*{{message.user.name}}*>  {{message.message_text}}</h5>
         </div>
         
         {% endfor %}
