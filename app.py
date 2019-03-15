@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, session, url_for, request, redirect, g, flash
 import requests, json
 from models import *
-from forms import RegistrationForm, LoginForm, CreateChannelForm, CreateStoryForm
+from forms import RegistrationForm, LoginForm, CreateChannelForm, CreateStoryForm, MessageForm, CommentForm
 from config import *
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_migrate import Migrate
@@ -32,6 +32,16 @@ login_.login_view = 'login'
 @login_.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500
+
 
 print(app.config)
 print()
@@ -212,6 +222,8 @@ def storyslist():
 	""" List of Storys. """
 	""" Get Storys From DataBase. """
 
+	storys = Story.query.all()
+
 	return render_template("storys_list.html", storys=storys)
 	
 
@@ -258,14 +270,7 @@ def channelPage(channel_title):
 	
 	""" Get Channel From DataBase if it exists. """	
 	channel = Channel.query.filter_by(title=channel_title).first_or_404()
-	
-	'''
-	channel = {}
-	for c in channels:
-		if c['title'] == channel_title:
-			channel = c
-	'''	
-	
+		
 	""" If there is no Channel, redirect to Channels list. """
 	if channel == None:
 
@@ -276,20 +281,35 @@ def channelPage(channel_title):
 
 	""" Channel Info. """
 	print(channel)
-	if channel:
-		info = {'title': channel.title, 'author': channel.user.name, 'text': channel.text}
-	else:
-		info = {}	
 	
 	""" list of Messages from Channel. Send first 20. """
-	messages = channel.messages 
+	messages = channel.messages
 	print(messages)
+	if not messages:
+		messages = "No Messages."
+
 
 	""" List of Storys from Channel. Send first 20. """
 	storys = channel.storys 
 	print(storys)
+	if not storys:
+		storys = "No Storys."
+	
+	form = MessageForm()
+	""" Get values from form. """
+	
+	if form.validate_on_submit():
+		""" Make sure . """
+		
+		message = Message(user_id=current_user.id, channel_id=channel.id, message_text=form.message_text.data, user=current_user, channel=channel)
+		db.session.add(message)
+		db.session.commit()
+		
+		print(f"message === > {message}")
+		
+		render_template("channel_page.html", channel=channel, messages=messages, storys=storys, form=form)
 
-	return render_template("channel_page.html", channel=channel, messages=messages, storys=storys, info=info)
+	return render_template("channel_page.html", channel=channel, messages=messages, storys=storys, form=form)
 
 
 @app.route("/storyPage/<string:story_title>", methods=['GET', 'POST'])
@@ -304,29 +324,44 @@ def storyPage(story_title):
 	print(f"title type =====> {type(story_title)}")
 
 	""" Get Story From DataBase if it exists. """
-	#story = Story.query.filter_by(title=story_title).first_or_404()
-
-	story = {}
-	for s in storys:
-		if s['title'] == story_title:
-			story = s
+	story = Story.query.filter_by(title=story_title).first_or_404()
 
 	""" If there is no Story, redirect to Storys list. """
 	if story == None:
-
 		error = "No Story"
 
 		return render_template("storys_list.html", error=error)
 
 	""" list of Comments from Story. Send first 20. """
-	#comments = story.comments
-	comments = story['comments'] if 'comments' in story else "No Comments."
+	comments = story.comments
+	#comments = story['comments'] if 'comments' in story else "No Comments."
+	if not comments:
+		comments = "No Comments."
+
 
 	""" List of Links from Story. Send first 20. """
-	#links = story.links
-	links = story['links'] if 'links' in story else "No Links."
+	links = story.links
+	#links = story['links'] if 'links' in story else "No Links."
+	if not links:
+		links = "No Links."
+
+	form = CommentForm()
+	""" Get values from form. """
 	
-	return render_template("story_page.html", story=story, comments=comments, links=links)
+	if form.validate_on_submit():
+		""" Make sure . """
+		
+		comment = Comment(user_id=current_user.id, story_id=story.id, comment_text=form.comment_text.data, user=current_user, story=story)
+		db.session.add(comment)
+		db.session.commit()
+		
+		print(f"message === > {comment}")
+		
+		render_template("story_page.html", story=story, comments=comments, links=links, form=form)
+
+
+	
+	return render_template("story_page.html", story=story, comments=comments, links=links, form=form)
 
 
 

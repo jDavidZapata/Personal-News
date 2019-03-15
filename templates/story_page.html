@@ -14,24 +14,26 @@
 
 {% block body %}
 
-<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-info left">
+<div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-secondary left">
     {% if story %}
-    <h2 class="story-title">PStory Title:: {{story.title}}</h2>
+    <h1 class="story-title">{{story.title.upper()}}</h1>
     
     <div class="row justify-content-center story-info">     
         
         
         <div class="col-lg-5 col-md-5 story-info-e">
-            <h3><span class="badge badge-pill badge-light">PStory Author: </span></h3>
-            <h4><a href="#" class="badge badge-warning">{{story.author}}</a></h4>
+            <h3><span class="badge badge-pill badge-light">PStory By: </span></h3>
+            <h3><span class="badge badge-warning">{{story.user.name}}</span></h3>
+            
         </div>
-        <div class="col-lg-5 col-md-5 story-info-e">
-            <h3><span class="badge badge-pill badge-light">Year Published: </span></h3>
-            <h4><a href="#" class="badge badge-warning">{{story.year}}</a></h4>
+        <div class="col-lg-6 col-md-5 story-info-e">
+            <h3><span class="badge badge-pill badge-light">Since: </span></h3>
+            <h3><span class="badge badge-warning">{{story.time}}</span></h3>
+            
         </div>
-        <div class="col-10 story-info-e">
-            <h3><span class="badge badge-pill badge-light">PStory Text : </span></h3>
-            <h4><a href="#" class="badge badge-warning">{{story.text}}</a></h4>
+        <div class="col-11 story-info-e">
+            <h3><span class="badge badge-pill badge-light">PStory : </span></h3>
+            <h3>{{story.story_text.capitalize()}}</h3>            
         </div> 
                
     </div>
@@ -43,7 +45,7 @@
 
         <div class="col-lg-4 col-md-6 story-link">
                
-            <h2>*{{links}}</h2>
+            <h2>*No Links</h2>
         </div>
 
 
@@ -71,27 +73,37 @@
     <form id="form" class="form-inline justify-content-center" action="" method="">
     <button id="button" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
     </form>
+
     <form id="form" class="form-inline justify-content-center" action="" method="">
     <button id="button" type="submit" class="btn btn-primary mb-2">Add News Link</button>
     </form>
+    
     {% endif %}
 
-    <form id="form" class="form-inline justify-content-center" action="" method="">
-    <div class="form-group mx-sm-3 mb-2">
-    	<label for="comment" class="sr-only">Comment</label>
-        <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter New Comment"
-                required>
+
+    <div class="messageform form-row justify-content-center">
+        <form method="post" action="" novalidate >
+            {{ form.csrf_token }}                                
+                <div class="form-group ">                    
+                    {{ form.comment_text.label }}<br>
+                    {{ form.comment_text(size=200) }}<br>
+                    {% for error in form.comment_text.errors %}
+                    <span style="color: yellow;">[{{ error }}]</span>
+                    {% endfor %}
+                </div>
+            
+                <div class="form-group">
+                    <p class="btn btn-primary mb-2">{{ form.submit() }}</p>            
+                </div>           
+        </form>
     </div>
 
-    <button id="button" type="submit" class="btn btn-primary mb-2">Create New Comment</button>
-    </form>
-
     <div class="row justify-content-center story-comments" style="background-color: white">
-        {% if comments == 'No Comments.' %}
+        {% if comments == "No Comments." %}
 
         <div class="col-12 story-comment">
                
-            <h2>*{{comments}}</h2>
+            <h2>*No Comments</h2>
         </div>
 
 
@@ -99,9 +111,8 @@
         {% for comment in comments %}
 
         <div class="col-12 comment-box story-comment">
-            
-            <h4><a href="#" class="badge badge-warning">Comment # {{comments.index(comment) + 1}}</a></h4>
-            <h5><*User>{{comment.text}}</h5>
+            <h4><span class="badge badge-warning">Comment # {{comments.index(comment) + 1}}</span></h4>
+            <h5><*{{comment.user.username}}*>   {{comment.comment_text}}</h5>
         </div>
         
         {% endfor %}
@@ -112,55 +123,3 @@
 
 
 {% endblock %}
-
-
-
-<!---
-
-extend layout
-
-
-container left
-
-row 1
-
-col
-
-Pstory title
-or 
-Pnews link title
-
-
-row 2
-
-col
-
-for comment in comments 
-
-    row 
-
-    col  
-
-    comment(one from 100 in session)
-
-
-
-container right 
-
-row 1
-
-col  
-
-    row 
-    col
-        related Pstories list
-        or
-        related Pnews links
-    
-row 2
-
-col
-
-    create new comment form 
-
---->

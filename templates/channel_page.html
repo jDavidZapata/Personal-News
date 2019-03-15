@@ -6,17 +6,14 @@
 
 
 {% block header %}
-<h3>{% block title %}{{info.title}}{% endblock %}</h3>
+<h3>{% block title %}{{channel.title.upper()}}{% endblock %}</h3>
 {% endblock %}
-
-{% block content %}{% endblock %}
-
 
 {% block body %}
 
 <div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-primary left">
-    {% if info %}
-    <h2 class="channel-title">Channel Title ==> {{info.title}} </h2>
+    {% if channel %}
+    
         
     <div class="row justify-content-center">
 
@@ -24,11 +21,17 @@
             
             
           
-            <div class="col-12 channel-info-e">
-                <h2 ></h2>
-                <h4><a href="#" class="badge badge-warning">Author: {{info.author}}</a></h4>
+            <div class="col-10 col-md-5 col-sm-10 channel-info-e">
+                <h1 class="channel-title">{{channel.title.upper()}}</h1>
+            </div>
 
-                <h2>Channel Description: {{info.text}}</h2>
+            <div class="col-10 col-md-5 col-sm-10 channel-info-e">
+                <h3><span class="badge badge-warning">{{channel.user.name}}</span></h3>
+                <h3><span class="badge badge-warning">{{channel.time}}</span></h3>
+            </div>
+
+            <div class="col-11 channel-info-e">
+                <h2>Channel Description: {{channel.text.capitalize()}}</h2>
             </div>
     
             
@@ -38,11 +41,11 @@
     </div>
     {% endif %}
     <div class="row justify-content-left channel-storys" style="background-color: violet">
-        {% if storys == "No Story's." %}
+        {% if storys == "No Storys." %}
 
         <div class="col-lg-4 col-md-6 channel-story">
                
-            <h2>*{{storys}}</h2>
+            <h2>*{{storys}}*</h2>
         </div>
 
 
@@ -50,10 +53,11 @@
         {% for story in storys %}
 
         <div class="col-12 channel-story">
-            <h4><a href="{{ url_for('storyPage', story_title=str(story.title) }}" class="badge badge-danger">{{story.title}}</a></h4>
-            <h4><a href="{{ url_for('storyPage', story_title=story.title) }}" class="badge badge-warning">Story # {{storys.index(story) + 1}}</a></h4>
-            <h2 class="storys-title">Title: {{story.title}}</h2>
-            <h3>Story Description: *{{story.story_text}}</h3>
+            <h4><a href="{{ url_for('storyPage', story_title=story.title) }}" class="badge badge-danger">Story # {{storys.index(story) + 1}}  {{story.title}}</a></h4>
+            <h2 class="storys-title">*{{story.title}}*</h2>
+        </div>
+        <div class="col-12 channel-story">
+            <h3>Story Description: {{story.story_text.capitalize()}}</h3>
         </div>
         
         {% endfor %}
@@ -66,26 +70,34 @@
 <div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
     {% if not g.channelowner %}
     <form id="form" class="form-inline justify-content-center" action="" method="">
-    <button id="button" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
-    </form>
-    
+        <button id="button" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
+    </form>    
     {% endif %}
-    <form id="form" class="form-inline justify-content-center" action="" method="">
-    <div class="form-group mx-sm-3 mb-2">
-        <label for="messsage" class="sr-only">Message</label>
-        <input type="text" name="message" class="form-control" id="message" placeholder="Enter New Message"
-                required>
+
+    
+    <div class="messageform form-row justify-content-center">
+        <form method="post" action="" novalidate >
+            {{ form.csrf_token }}                                
+                <div class="form-group ">                    
+                    {{ form.message_text.label }}<br>
+                    {{ form.message_text(size=200) }}<br>
+                    {% for error in form.message_text.errors %}
+                    <span style="color: yellow;">[{{ error }}]</span>
+                    {% endfor %}
+                </div>
+            
+                <div class="form-group">
+                    <p class="btn btn-primary mb-2">{{ form.submit() }}</p>            
+                </div>           
+        </form>
     </div>
 
-    <button id="button" type="submit" class="btn btn-primary mb-2">Create New Message</button>
-    </form>
-
     <div class="row justify-content-center channel-messages" style="background-color: white">
-        {% if messages == 'No Messages.' %}
+        {% if messages == "No Messages." %}
 
         <div class="col-12 channel-message">
                
-            <h2>*{{messages}}</h2>
+            <h2>*{{messages}}*</h2>
         </div>
 
 
@@ -93,9 +105,8 @@
         {% for message in messages %}
 
         <div class="col-12 channel-message message-box">
-            
-            <h4><a href="#" class="badge badge-warning">Message # {{messages.index(message) + 1}}</a></h4>
-            <h5><*{{message.user.name}}*>  {{message.message_text}}</h5>
+            <h4><span class="badge badge-warning">Message # {{messages.index(message) + 1}}</span></h4>
+            <h5><*{{message.user.username}}*>  {{message.message_text}}</h5>
         </div>
         
         {% endfor %}
@@ -107,63 +118,3 @@
 
 {% endblock %}
 
-
-
-
-<!---
-extend layout
-
-
-container left
-
-row 1
-
-col
-
-channel title
-
-list of Pstories
-and/or
-list of Pnews links
-
-row 2
-
-col
-
-for message in messages 
-
-    row 
-
-    col  
-
-    message(one from 100 in session)
-
-
-
-container right 
-
-row 1
-
-col  
-
-    if channel owner 
-    row a
-    col
-    create Pstory form
-
-    row b 
-    col
-    add link to Pnews links
-    
-    else
-    row a
-    col
-    related channels list
-    
-row 2
-
-col
-
-    create new message form 
-
---->

@@ -21,8 +21,8 @@
         <div class="col-11 story-bottom story-list-info">
             <h2>*</h2>
             <h4><a href="{{ url_for('storyPage', story_title=story.title) }}" class="badge badge-danger">{{story.title}}</a></h4>
-            <h3>By {{story.author}}</h3>
-            <h5>{{story.text}}</h5>
+            <h3>By {{story.user.name}}</h3>
+            <h5>{{story.story_text}}</h5>
         </div>
         {% endfor %}
     </div>
@@ -40,8 +40,5 @@
     </form>              
 </div>
 
-<hr>
-<div id="body">
-</div>
 
 {% endblock %}

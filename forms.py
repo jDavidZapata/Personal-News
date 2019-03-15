@@ -56,3 +56,13 @@ class CreateStoryForm(FlaskForm):
     comment = TextAreaField(u'Comment', validators=[length(max=200)])
 
     submit = SubmitField('Create Story')
+
+
+class MessageForm(FlaskForm):
+    message_text = TextAreaField(u'Enter a New Message', validators=[DataRequired(), length(max=200)])
+    submit = SubmitField('Create A New Message')
+
+
+class CommentForm(FlaskForm):
+    comment_text = TextAreaField(u'Enter a New Comment', validators=[DataRequired(), length(max=200)])
+    submit = SubmitField('Create A New Comment')
