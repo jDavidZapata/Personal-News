@@ -20,7 +20,7 @@
         {% for story in storys %}
         <div class="col-11 story-bottom story-list-info">
             <h2>*</h2>
-            <h4><a href="{{ url_for('storyPage', story_title=story.title) }}" class="badge badge-danger">{{story.title}}</a></h4>
+            <h4><a href="{{ url_for('storyPage', story_id=story.id) }}" class="badge badge-danger">{{story.title}}</a></h4>
             <h3>By {{story.user.name}}</h3>
             <h5>{{story.story_text}}</h5>
         </div>
@@ -30,14 +30,12 @@
 
 <div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-success right">
 
-    <form class="form-inline justify-content-center" action="" method="POST">
-    	<div class="form-group mx-sm-3 mb-2">
-    		<label for="storyname" class="sr-only">Story</label>
-    		<input type="text" name="S_name" class="form-control" id="storytitle" placeholder="Enter Story Name"
-                required>
-        </div>
-        <button id="button" type="submit" class="btn btn-primary mb-2">Create A Story</button>
-    </form>              
+    {% if not current_user.is_anonymous %}
+    <form id="form" class="form-inline justify-content-center" action="{{url_for('createStory')}}" method="get">
+        <button id="button" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
+    </form>    
+    {% endif %}
+
 </div>
 
 

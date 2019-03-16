@@ -6,7 +6,7 @@
 
 
 {% block header %}
-<h3>{% block title %}{{story.title}}{% endblock %}</h3>
+<h3>{% block title %}{{story.title.upper()[:20]}}{% endblock %}</h3>
 {% endblock %}
 
 {% block content %}{% endblock %}
@@ -16,7 +16,7 @@
 
 <div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-secondary left">
     {% if story %}
-    <h1 class="story-title">{{story.title.upper()}}</h1>
+    <h1 class="story-title">{{story.title.capitalize()}}</h1>
     
     <div class="row justify-content-center story-info">     
         
@@ -69,8 +69,8 @@
 </div>
 
 <div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
-	{% if not g.channelowner %}
-    <form id="form" class="form-inline justify-content-center" action="" method="">
+	{% if not current_user.is_anonymous %}
+    <form id="form" class="form-inline justify-content-center" action="{{url_for('createStory')}}" method="get">
     <button id="button" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
     </form>
 

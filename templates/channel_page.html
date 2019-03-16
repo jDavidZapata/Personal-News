@@ -22,7 +22,7 @@
             
           
             <div class="col-10 col-md-5 col-sm-10 channel-info-e">
-                <h1 class="channel-title">{{channel.title.upper()}}</h1>
+                <h1 class="channel-title">{{channel.title.capitalize()}}</h1>
             </div>
 
             <div class="col-10 col-md-5 col-sm-10 channel-info-e">
@@ -52,11 +52,11 @@
         {% else %}
         {% for story in storys %}
 
-        <div class="col-12 channel-story">
-            <h4><a href="{{ url_for('storyPage', story_title=story.title) }}" class="badge badge-danger">Story # {{storys.index(story) + 1}}  {{story.title}}</a></h4>
+        <div class="col-12 channel-story-top">
+            <h4><a href="{{ url_for('storyPage', story_id=story.id) }}" class="badge badge-danger">Story # {{storys.index(story) + 1}}  {{story.title}}</a></h4>
             <h2 class="storys-title">*{{story.title}}*</h2>
         </div>
-        <div class="col-12 channel-story">
+        <div class="col-12 channel-story-bottom">
             <h3>Story Description: {{story.story_text.capitalize()}}</h3>
         </div>
         
@@ -68,8 +68,8 @@
 </div>
 
 <div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
-    {% if not g.channelowner %}
-    <form id="form" class="form-inline justify-content-center" action="" method="">
+    {% if not current_user.is_anonymous %}
+    <form id="form" class="form-inline justify-content-center" action="{{url_for('createStory')}}" method="get">
         <button id="button" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
     </form>    
     {% endif %}

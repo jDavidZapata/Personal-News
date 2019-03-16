@@ -35,12 +35,12 @@
     }
 
     .left {
-      padding: 30px;
+      padding: 40px;
       
     }
 
     .right {
-      padding: 30px;
+      padding: 40px;
     }
 
     footer {
@@ -106,17 +106,34 @@
       border-right: 2px solid black;
       border-left: 2px solid black;
       border-bottom: 2px solid black;
+      padding: 5px;
     }
 
-    .channel-info {
+    .channel-story {
+
+      border-right: 2px solid black;
+      border-left: 2px solid black;
+      
+      padding: 10px;
 
     }
 
     .channel-storys {
 
+      padding: 20px;     
+
     }
 
-    .channel-story {
+    .channel-story-top {
+    
+      padding: 10px;
+
+    }
+
+    .channel-story-bottom {
+      
+      border-bottom: 2px solid black;
+      padding: 10px;
 
     }
 
@@ -207,7 +224,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
-
+            
             {{ nav_link('index', 'Home') }}
             {{ nav_link('category', 'Category') }}
             {{ nav_link('channelslist', 'Channels') }}
@@ -228,7 +245,11 @@
             {{ current_user.username.upper() }}
             {% endif %}
             Always Be Amazing!!!
-
+            <!--{% if not current_user.is_anonymous %}
+            <form id="form" class="form-inline justify-content-center" action="{{url_for('channelPage', channel_title='first')}}" method="get">
+                <button id="button" type="submit" class="btn btn-warning mb-2">My channel</button>
+            </form>    
+            {% endif %}-->
           </span>
         </div>
       </nav>

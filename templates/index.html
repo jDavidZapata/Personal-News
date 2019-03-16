@@ -24,9 +24,9 @@
             <!--button id="button" type="submit" class="btn btn-danger mb-2 hide">Add Link to Channel</button-->
 			<h6>{{story.url}}</h6>
             <div class="col-12 story-bottom">
-                <div class="story-add-button hide">
-                    <h4><a href="{{ url_for('channelPage', channel_title='Channel-test') }}" class="badge badge-danger">Add Link to Channel/Story</a></h4>
-                </div>
+                <!--div class="story-add-button hide">
+                    <h4><a href="{{ url_for('channelPage', channel_title='First Channel') }}" class="badge badge-danger">Add Link to Channel/Story</a></h4>
+                </div-->
             	<h4><a href="{{story.url}}" class="badge badge-light"><img src="{{story.multimedia.url}}" alt="{{story.multimedia.caption}}" class="center"></a></h4>
 
             </div>

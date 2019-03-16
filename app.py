@@ -43,10 +43,6 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 
-print(app.config)
-print()
-
-print(os.environ['APP_SETTINGS'])
 
 channel = None
 
@@ -97,7 +93,6 @@ key3 = 'comments'
 get_whatever_list(storys, key3, comments)
 
 
-
 @app.route("/")
 def index():
 
@@ -139,7 +134,7 @@ def register():
 		db.session.add(user)
 		db.session.commit()
 		flash('Congratulations, you are now a registered user!')
-		print(form.data)
+		
 
 		return redirect(url_for('login'))
 
@@ -165,8 +160,7 @@ def login():
 		user = User.query.filter_by(email=form.email.data).first()
 
 		flash('Login requested for user {}, remember_me={}'.format(form.email.data, form.remember_me.data))
-		print(form.data)
-
+		
 		if user is None or not user.check_password(form.password.data):
 			flash('Invalid email or password')
 			return redirect(url_for('login'))
@@ -203,6 +197,7 @@ def category():
 
 	categorys = categories.split(',')
 
+	
 	return render_template("category.html", categorys=categorys)
 
 
@@ -212,8 +207,7 @@ def channelslist():
 	""" Get all Channels From DataBase. """
 
 	channels = Channel.query.all()
-	print(f"channels =====>  {channels}")
-
+	
 	return render_template("channels_list.html", channels=channels)
 
 
@@ -233,10 +227,8 @@ def storyslist():
 def home(category_title):
 	""" List of news links. """
 	""" Make API call to NYT for Top Story's Section News links. """
-	#  return jsonify(dict{key:value}===>(request('category_title':{'technology':[', ']})))
-
-	print(f"category title: {category_title}")
-
+	
+	
 	res = requests.get(f"https://api.nytimes.com/svc/topstories/v2/{category_title}.json", params={"api-key": os.getenv("API_KEY")})
 		
 	if res.status_code != 200:
@@ -262,15 +254,10 @@ def channelPage(channel_title):
 		Looks for that string channel name and returns it.
 		Else returns channels page with channel not found error. """
 
-	#Send back list of news links on channel.
-	#Send back first 100 messages.
-	#Send back Form for messages.(JS)
-	#return jsonify(texts[10])
-
 	
 	""" Get Channel From DataBase if it exists. """	
 	channel = Channel.query.filter_by(title=channel_title).first_or_404()
-		
+	#channel = Channel.query.filter_by(title=channel_title).first()	
 	""" If there is no Channel, redirect to Channels list. """
 	if channel == None:
 
@@ -280,18 +267,17 @@ def channelPage(channel_title):
 
 
 	""" Channel Info. """
-	print(channel)
 	
 	""" list of Messages from Channel. Send first 20. """
 	messages = channel.messages
-	print(messages)
+	
 	if not messages:
 		messages = "No Messages."
 
 
 	""" List of Storys from Channel. Send first 20. """
 	storys = channel.storys 
-	print(storys)
+	
 	if not storys:
 		storys = "No Storys."
 	
@@ -303,28 +289,24 @@ def channelPage(channel_title):
 		
 		message = Message(user_id=current_user.id, channel_id=channel.id, message_text=form.message_text.data, user=current_user, channel=channel)
 		db.session.add(message)
-		db.session.commit()
+		db.session.commit()		
 		
-		print(f"message === > {message}")
-		
-		render_template("channel_page.html", channel=channel, messages=messages, storys=storys, form=form)
+		return render_template("channel_page.html", channel=channel, messages=messages, storys=storys, form=form)
 
 	return render_template("channel_page.html", channel=channel, messages=messages, storys=storys, form=form)
 
 
-@app.route("/storyPage/<string:story_title>", methods=['GET', 'POST'])
-def storyPage(story_title):
+@app.route("/storyPage/<int:story_id>", methods=['GET', 'POST'])
+def storyPage(story_id):
 	""" Story Page. """	
 	""" Route takes GET request with title string.
 		Looks for that string story name and returns it.
-		Else returns storys page with story not found error. """
+		Else returns storys page with story not found error.
+		Fix if story doesnt have a unique title then look it up by id """
 
-
-	print(f"title ==== {story_title}")
-	print(f"title type =====> {type(story_title)}")
 
 	""" Get Story From DataBase if it exists. """
-	story = Story.query.filter_by(title=story_title).first_or_404()
+	story = Story.query.filter_by(id=story_id).first_or_404()
 
 	""" If there is no Story, redirect to Storys list. """
 	if story == None:
@@ -334,14 +316,14 @@ def storyPage(story_title):
 
 	""" list of Comments from Story. Send first 20. """
 	comments = story.comments
-	#comments = story['comments'] if 'comments' in story else "No Comments."
+	
 	if not comments:
 		comments = "No Comments."
 
 
 	""" List of Links from Story. Send first 20. """
 	links = story.links
-	#links = story['links'] if 'links' in story else "No Links."
+	
 	if not links:
 		links = "No Links."
 
@@ -354,12 +336,9 @@ def storyPage(story_title):
 		comment = Comment(user_id=current_user.id, story_id=story.id, comment_text=form.comment_text.data, user=current_user, story=story)
 		db.session.add(comment)
 		db.session.commit()
+				
 		
-		print(f"message === > {comment}")
-		
-		render_template("story_page.html", story=story, comments=comments, links=links, form=form)
-
-
+		return render_template("story_page.html", story=story, comments=comments, links=links, form=form)
 	
 	return render_template("story_page.html", story=story, comments=comments, links=links, form=form)
 
@@ -378,40 +357,29 @@ def createChannel():
 		""" Check User doesnt already have a Channel. """
 		""" If User has Channel redirect to channel. """
 		
-		print(form.data)
 		
 		ch = Channel.query.filter_by(user=current_user).first()
 		if ch is not None:
 			flash('You Already Have A Channel.')
 			return redirect(url_for('createChannel'))
 		
-		
-		#channel = current_user.add_channel(user_id=current_user.id, title=form.title.data, text=form.text.data, user=current_user)
-		
+		""" Add Channel. """
 		channel = Channel(user_id=current_user.id, title=form.title.data, text=form.text.data, user=current_user)
 		db.session.add(channel)
 
+		""" Add Message if any. """
 		if form.message.data:
 			message = Message(user_id=current_user.id, channel_id=channel.id, message_text=form.message.data, user=current_user, channel=channel)
-			#message = channel.add_message_(user_id=current_user.id, channel_id=channel.id, message_text=form.message.data, user=current_user, channel=channel)
+			
 			db.session.add(message)		
 		
+		""" Commit changes to DataBase. """
 		db.session.commit()
 		flash('Congratulations, you Added Your Channel!')		
 
-		print(current_user.channel)
-
-		return jsonify(channel.user.name)
 		
+		return redirect(url_for('channelPage', channel_title=form.title.data))
 
-	#Display Form for creating Channel.
-	#Only one channel per user.
-	#If Post then take form info and create Channel.
-	#If it already exists send "Channel already taken."
-	#If it doesnt exist then, send 
-	#"Create or add a story to Your channel".
-	#And send a list of categories.
-	
 	return render_template("channel_create.html", form=form)
 
 
@@ -425,9 +393,7 @@ def createStory():
 	
 	if form.validate_on_submit():
 		""" Check that User doesn't have a Story with same title. """
-				
-		print(form.data)
-		#st = Story.query.filter_by(user_id=current_user.id, title=form.title.data).first()
+
 		channel = Channel.query.filter_by(user=current_user).first()
 		if channel is None:
 			flash("You Don't Have A Channel.")
@@ -435,39 +401,28 @@ def createStory():
 
 
 		st = Story.query.filter_by(user_id=current_user.id, title=form.title.data).first()
-		
 		if st is not None:
 			flash('You Already Have A Story with this Title.')
 
 			return redirect(url_for('createStory'))
-		
-		
-		#story = current_user.add_story(user_id=current_user.id, channel_id=channel.id, title=form.title.data, story_text=form.text.data, user=current_user, channel=channel)
-		
+				
+		""" Add Story. """
 		story = Story(user_id=current_user.id, channel_id=channel.id, title=form.title.data, story_text=form.story_text.data, user=current_user, channel=channel)
-		print(f"Story ====> {story}")
 		db.session.add(story)
 
-		
+		""" Add Comments if any. """
 		if form.comment.data:
 			comment = Comment(user_id=current_user.id, story_id=story.id, comment_text=form.comment.data, user=current_user, story=story)
-			#comment = channel.add_comment_(user_id=current_user.id, story_id=story.id, comment_text=form.comment.data, user=current_user, story=story)
-			db.session.add(comment)
-			print(f"Comment ====> {comment}")		
 		
+			db.session.add(comment)					
+		
+		""" Commit changes to DataBase. """
 		db.session.commit()
 		flash('Congratulations, you Added A Story!')		
 
-						
-		return jsonify(story.user.name, channel.title, story.title)
-
-	#Display Form for creating Categories.
-	#If Post then take form info and create category.
-	#If it already exists send list of stories.
-	#If it doesnt exist then send "Create or add a story" 
-
-
-	#return jsonify(storys)
+		
+		return redirect(url_for('storyPage', story_id=story.id))
+		
 	return render_template("story_create.html", form=form)
 
 
