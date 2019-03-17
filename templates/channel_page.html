@@ -72,7 +72,7 @@
     <form id="form" class="form-inline justify-content-center" action="{{url_for('createStory')}}" method="get">
         <button id="button" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
     </form>    
-    {% endif %}
+    
 
     
     <div class="messageform form-row justify-content-center">
@@ -91,7 +91,8 @@
                 </div>           
         </form>
     </div>
-
+    {% endif %}
+    
     <div class="row justify-content-center channel-messages" style="background-color: white">
         {% if messages == "No Messages." %}
 
