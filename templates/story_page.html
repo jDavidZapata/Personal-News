@@ -78,9 +78,6 @@
     <button id="button" type="submit" class="btn btn-primary mb-2">Add News Link</button>
     </form>
     
-    
-
-
     <div class="messageform form-row justify-content-center">
         <form method="post" action="" novalidate >
             {{ form.csrf_token }}                                
@@ -98,7 +95,7 @@
         </form>
     </div>
     {% endif %}
-    
+    <h2> Comments </h2>
     <div class="row justify-content-center story-comments" style="background-color: white">
         {% if comments == "No Comments." %}
 
