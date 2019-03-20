@@ -1,38 +1,40 @@
- document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
 
-                // Start by loading first page.
-                load_page('channellist');
+    // Connect to websocket
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
-                // Set links up to load new pages.
-                /*
-                document.querySelectorAll('.nav-link').forEach(link => {
-                    link.onclick = () => {
-                        const page = link.dataset.page;
-                        load_page(page);
-                        return false;
-                    };
-                });
-                */
-            });
-                
-            // Update text on popping state.
-            window.onpopstate = e => {
-                const data = e.state;
-                document.title = data.title;
-                document.querySelector('#body').innerHTML = data.text;
-            };
+    // When connected, configure button
+    socket.on('connect', () => {
 
-            // Renders contents of new page in main view.
-            function load_page(name) {
-                const request = new XMLHttpRequest();
-                request.open('GET', `/${name}`);
-                request.onload = () => {
-                    const response = JSON.parse(request.responseText);
-                    document.querySelector('#body').innerHTML = response;
+        // button should emit a "submit message" event
+        document.querySelector('#button').onclick =  () => {            
+            const channel_t = document.querySelector('.channel-title').innerHTML;
+            const message = document.querySelector('#message-text').value;
+            
+            const message1 = document.createElement('div');
+            message1.className = 'channel-message';
+            message1.innerHTML = "#### new Message###";
+            document.querySelector('#messages').append(message1);
+            socket.emit('submit message', {'message': message, 'channel_t': channel_t});
+        };
+    });
 
-                    // Push state to URL.
-                    document.title = name;
-                    history.pushState({'title': name, 'text': response}, name, name);
-                };
-                request.send();
-            }
+    // When a new message is announced, add to the div list
+    socket.on('new message', data => {
+        add_message(data)
+        //document.querySelector('#new-message').innerHTML = data.message.message_text;
+        //document.querySelector('#user').innerHTML = data.message.user.username;
+    });
+});
+
+// Add a new messaege with given data to DOM.
+function add_message(data) {
+
+    // Create new message.
+    const message = document.createElement('div');
+    message.className = 'channel-message';
+    message.innerHTML = data;
+
+    // Add message to DOM.
+    document.querySelector('#messages').append(message);
+};

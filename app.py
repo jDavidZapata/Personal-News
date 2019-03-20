@@ -6,6 +6,7 @@ from config import *
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_migrate import Migrate
 from werkzeug.urls import url_parse
+from flask_socketio import SocketIO, emit
 import os
 
 
@@ -28,6 +29,8 @@ migrate = Migrate(app, db)
 
 login_ = LoginManager(app)
 login_.login_view = 'login'
+
+socketio = SocketIO(app)
 
 @login_.user_loader
 def load_user(id):
@@ -424,6 +427,22 @@ def createStory():
 		return redirect(url_for('storyPage', story_id=story.id))
 		
 	return render_template("story_create.html", form=form)
+
+
+@socketio.on("submit message")
+def message(data):
+	print(f"New DATA === > {data}")
+	new_message = data["message"]
+	channel_title = data['channel_t']
+	channel = Channel.query.filter_by(title=channel_title).all()
+	#message = Message(user_id=current_user.id, channel_id=channel.id, message_text=new_message, user=current_user, channel=channel)
+	#db.session.add(message)
+	#db.session.commit()
+	print(f"New Message === > {new_message}")
+	print(f"New channel === > {channel}")
+	print(f"current_user === > {current_user.channel[0].title}")
+	emit("new message", new_message, broadcast=True)
+
 
 
 if __name__ == "__main__":

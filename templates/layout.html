@@ -1,4 +1,4 @@
-{% from "macros.html" import nav_link with context %}
+
 <!doctype html>
 <html lang="en-us">
 
@@ -203,11 +203,13 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
     crossorigin="anonymous">
 
-  
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+
   {% block js %}
-  <script src="{{ url_for('static', filename='index.js') }}"></script>
+  <script src="{{ url_for('static', filename='index2.js') }}"></script>
   {% endblock %}
 
+  
   <title>PNews --> {% block title %}Your News{% endblock %}</title>
 </head>
 <body>
@@ -224,19 +226,37 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav mr-auto">
-            
-            {{ nav_link('index', 'Home') }}
-            {{ nav_link('category', 'Category') }}
-            {{ nav_link('channelslist', 'Channels') }}
-            {{ nav_link('storyslist', 'Storys') }}
-            {{ nav_link('createChannel', 'Create Channel') }}
-            {{ nav_link('createStory', 'Create Story') }}            
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('index') }}" data-page=endpoint>{{'Home'}}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('category') }}" data-page=endpoint>{{'Category'}}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('channelslist') }}" data-page=endpoint>{{'Channels'}}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('storyslist') }}" data-page=endpoint>{{'Storys'}}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('createChannel') }}" data-page=endpoint>{{'Create Channel'}}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('createStory') }}" data-page=endpoint>{{'Create Story'}}</a>
+            </li>
             {% if current_user.is_anonymous %}
-            {{ nav_link('register', 'Register') }}
-            {{ nav_link('login', 'Log In') }}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('register') }}" data-page=endpoint>{{'Register'}}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('login') }}" data-page=endpoint>{{'Log In'}}</a>
+            </li>
             {% else %}
-            {{ nav_link('logout', 'Log Out') }}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}" data-page=endpoint>{{'Log Out'}}</a>
+            </li>
             {% endif %}
+            
           </ul>
           <span class="navbar-text">
             

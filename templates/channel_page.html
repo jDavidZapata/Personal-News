@@ -1,12 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block js %}
-  <script src="{{ url_for('static', filename='index.js') }}"></script>
+  <script src="{{ url_for('static', filename='index2.js') }}"></script>
 {% endblock %}
 
 
 {% block header %}
-<h3>{% block title %}{{channel.title.upper()}}{% endblock %}</h3>
+{% block title %}{{channel.title.upper()}}{% endblock %}
 {% endblock %}
 
 {% block body %}
@@ -22,7 +22,7 @@
             
           
             <div class="col-10 col-md-5 col-sm-10 channel-info-e">
-                <h1 class="channel-title">{{channel.title.capitalize()}}</h1>
+                <h1 class="channel-title">{{channel.title}}</h1>
             </div>
 
             <div class="col-10 col-md-5 col-sm-10 channel-info-e">
@@ -70,7 +70,7 @@
 <div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
     {% if not current_user.is_anonymous %}
     <form id="form" class="form-inline justify-content-center" action="{{url_for('createStory')}}" method="get">
-        <button id="button" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
+        <button id="createbutton" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
     </form>    
     
 
@@ -91,9 +91,25 @@
                 </div>           
         </form>
     </div>
+
+    
+    <div>
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="message" class="sr-only">Enter Message</label>
+            <input type="text" name="message_text" class="form-control" id="message-text" placeholder="Your Message..."
+                    required>
+        </div>
+        <button id="button" class="btn btn-primary mb-2">Leave A Message</button>
+            
+    </div>
+
+
+
     {% endif %}
+
+
     <h2> Messages </h2>
-    <div class="row justify-content-center channel-messages" style="background-color: white">
+    <div id="messages" class="row justify-content-center channel-messages" style="background-color: white">
         {% if messages == "No Messages." %}
 
         <div class="col-12 channel-message">
@@ -109,6 +125,7 @@
             <h4><span class="badge badge-warning">Message # {{messages.index(message) + 1}}</span></h4>
             <h5><*{{message.user.username}}*>  {{message.message_text}}</h5>
         </div>
+
         
         {% endfor %}
         {% endif %}
