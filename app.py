@@ -6,7 +6,7 @@ from config import *
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_migrate import Migrate
 from werkzeug.urls import url_parse
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room, leave_room
 import os
 
 
@@ -434,15 +434,49 @@ def message(data):
 	print(f"New DATA === > {data}")
 	new_message = data["message"]
 	channel_title = data['channel_t']
-	channel = Channel.query.filter_by(title=channel_title).all()
+	channel = Channel.query.filter_by(title=channel_title).first()
 	#message = Message(user_id=current_user.id, channel_id=channel.id, message_text=new_message, user=current_user, channel=channel)
 	#db.session.add(message)
 	#db.session.commit()
+	room = channel_title
 	print(f"New Message === > {new_message}")
 	print(f"New channel === > {channel}")
 	print(f"current_user === > {current_user.channel[0].title}")
-	emit("new message", new_message, broadcast=True)
+	emit("new message", new_message, broadcast=True, room=room)
 
+@socketio.on("join")
+def on_join(data):
+	# place user in room 
+	print(f"New DATA  joining === > {data}")
+	user = current_user
+	channel_title = data['channel_t']
+	#channel = Channel.query.filter_by(title=channel_title).first()
+	join_room(channel_title)
+	print(f"User join === > {user}")
+	print(f"Channel join === > {channel_title}")
+
+
+@socketio.on("leave")
+def on_leave(data):
+	# Take user out of room 
+	print(f"New DATA leaving === > {data}")
+	user = current_user
+	channel_title = data['channel_t']
+	#channel = Channel.query.filter_by(title=channel_title).first()
+	leave_room(channel_title)
+	print(f"User leave === > {user}")
+	print(f"Channel leave === > {channel_title}")
+
+@socketio.on("leave1")
+def on_leave1(data):
+	# Take user out of room 
+	print(f"New DATA leaving1 === > {data}")
+	user = current_user
+	channel_title = data['channel_t']
+	#channel = Channel.query.filter_by(title=channel_title).first()
+	leave_room(channel_title)
+	print(f"User leave1 out === > {user}")
+	print(f"Channel leave1 out === > {channel_title}")
 
 
 if __name__ == "__main__":

@@ -5,10 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // When connected, configure button
     socket.on('connect', () => {
+        
+        const channel_t = document.querySelector('.channel-title').innerHTML;
 
         // button should emit a "submit message" event
         document.querySelector('#button').onclick =  () => {            
-            const channel_t = document.querySelector('.channel-title').innerHTML;
+            
             const message = document.querySelector('#message-text').value;
             
             const message1 = document.createElement('div');
@@ -17,6 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('#messages').append(message1);
             socket.emit('submit message', {'message': message, 'channel_t': channel_t});
         };
+        
+        // When page loads add user to room 
+        socket.emit('join', {'channel_t': channel_t});
+
+        // Add lisener for unload event in order to take user out of room
+        document.addEventListener('onbeforeunload', () => {
+            socket.emit('leave', {'channel_t': channel_t});
+        });
+
+        // Add lisener for unload event in order to take user out of room
+        document.addEventListener('onunload', () => {
+            socket.emit('leave1', {'channel_t': channel_t});
+        });
+
+
     });
 
     // When a new message is announced, add to the div list
@@ -26,6 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
         //document.querySelector('#user').innerHTML = data.message.user.username;
     });
 });
+
+
 
 // Add a new messaege with given data to DOM.
 function add_message(data) {
