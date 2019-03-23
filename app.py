@@ -449,11 +449,11 @@ def on_join(data):
 	# place user in room 
 	print(f"New DATA  joining === > {data}")
 	user = current_user
-	channel_title = data['channel_t']
+	room = data['room']
 	#channel = Channel.query.filter_by(title=channel_title).first()
-	join_room(channel_title)
+	join_room(room)
 	print(f"User join === > {user}")
-	print(f"Channel join === > {channel_title}")
+	print(f"Channel join === > {room}")
 
 
 @socketio.on("leave")
@@ -461,22 +461,38 @@ def on_leave(data):
 	# Take user out of room 
 	print(f"New DATA leaving === > {data}")
 	user = current_user
-	channel_title = data['channel_t']
+	room = data['room']
 	#channel = Channel.query.filter_by(title=channel_title).first()
-	leave_room(channel_title)
+	leave_room(room)
 	print(f"User leave === > {user}")
-	print(f"Channel leave === > {channel_title}")
+	print(f"Channel leave === > {room}")
 
 @socketio.on("leave1")
 def on_leave1(data):
 	# Take user out of room 
 	print(f"New DATA leaving1 === > {data}")
 	user = current_user
-	channel_title = data['channel_t']
+	room = data['room']
 	#channel = Channel.query.filter_by(title=channel_title).first()
-	leave_room(channel_title)
+	leave_room(room)
 	print(f"User leave1 out === > {user}")
-	print(f"Channel leave1 out === > {channel_title}")
+	print(f"Channel leave1 out === > {room}")
+
+
+@socketio.on("submit comment")
+def comment(data):
+	print(f"New DATA === > {data}")
+	new_comment = data["comment"]
+	story_id = data['story_id']
+	story = Story.query.filter_by(id=story_id).first()
+	#comment = Comment(user_id=current_user.id, story_id=story_id, comment_text=new_comment, user=current_user, story=story)
+	#db.session.add(comment)
+	#db.session.commit()
+	room = story_id
+	print(f"New Comment === > {new_comment}")
+	print(f"New Story === > {story}")
+	print(f"current_user === > {current_user.channel[0].title}")
+	emit("new comment", new_comment, broadcast=True, room=room)
 
 
 if __name__ == "__main__":

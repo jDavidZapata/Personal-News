@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block js %}
-  <script src="{{ url_for('static', filename='index.js') }}"></script>
+  <script src="{{ url_for('static', filename='storyPage.js') }}"></script>
 {% endblock %}
 
 
@@ -31,8 +31,13 @@
             <h3><span class="badge badge-warning">{{story.time}}</span></h3>
             
         </div>
+        <div class="col-lg-6 col-md-5 story-info-e">
+            <h3><span class="badge badge-pill badge-light">Story ID: </span></h3>
+            <h3><span class="badge badge-warning story-id">{{story.id}}</span></h3>
+            
+        </div>
         <div class="col-11 story-info-e">
-            <h3><span class="badge badge-pill badge-light">PStory : </span></h3>
+            <h3><span class="badge badge-pill badge-danger">Story : </span></h3>
             <h3>{{story.story_text.capitalize()}}</h3>            
         </div> 
                
@@ -71,11 +76,11 @@
 <div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
 	{% if not current_user.is_anonymous %}
     <form id="form" class="form-inline justify-content-center" action="{{url_for('createStory')}}" method="get">
-    <button id="button" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
+    <button id="createbutton" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
     </form>
 
     <form id="form" class="form-inline justify-content-center" action="" method="">
-    <button id="button" type="submit" class="btn btn-primary mb-2">Add News Link</button>
+    <button id="linksbutton" type="submit" class="btn btn-primary mb-2">Add News Link</button>
     </form>
     
     
@@ -97,9 +102,22 @@
                 </div>           
         </form>
     </div>
+
+    <div>
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="comment" class="sr-only">Enter Comment</label>
+            <input type="text" name="comment_text" class="form-control" id="comment-text" placeholder="Your Comment..."
+                    required>
+        </div>
+        <button id="button" class="btn btn-primary mb-2">Leave A Comment</button>
+            
+    </div>
+
+
+
     {% endif %}
     <h2> Comments </h2>
-    <div class="row justify-content-center story-comments" style="background-color: white">
+    <div id="comments" class="row justify-content-center story-comments" style="background-color: white">
         {% if comments == "No Comments." %}
 
         <div class="col-12 story-comment">

@@ -21,18 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         // When page loads add user to room 
-        socket.emit('join', {'channel_t': channel_t});
+        socket.emit('join', {'room': channel_t});
 
-        // Add lisener for unload event in order to take user out of room
-        document.addEventListener('onbeforeunload', () => {
-            socket.emit('leave', {'channel_t': channel_t});
-        });
-
-        // Add lisener for unload event in order to take user out of room
-        document.addEventListener('onunload', () => {
-            socket.emit('leave1', {'channel_t': channel_t});
-        });
-
+        
 
     });
 
@@ -42,6 +33,24 @@ document.addEventListener('DOMContentLoaded', () => {
         //document.querySelector('#new-message').innerHTML = data.message.message_text;
         //document.querySelector('#user').innerHTML = data.message.user.username;
     });
+
+    console.log('DOM fully loaded and parsed');
+    
+    // Add lisener for unload event in order to take user out of room
+    window.addEventListener('beforeunload', () => {
+        const channel_t = document.querySelector('.channel-title').innerHTML;
+        socket.emit('leave', {'room': channel_t});
+        console.log('DOM beforeunload');
+    
+    });
+    
+    // Add lisener for unload event in order to take user out of room
+    window.addEventListener('unload', function(event) {
+        const channel_t = document.querySelector('.channel-title').innerHTML;
+        socket.emit('leave1', {'room': channel_t});
+        console.log('DOM on unloaded end');
+    
+  });
 });
 
 
