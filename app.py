@@ -110,9 +110,7 @@ def index():
 	
 	links = [{'title': results[i]['title'], 'section' : results[i]['section'], 'abstract' : results[i]['abstract'], 
 			'url' : results[i]['url'], 'multimedia' : (results[i]['multimedia'][2] if results[i]['multimedia'] 
-			else results[i]['multimedia']) } for i in range(len(results))]
-
-    
+			else results[i]['multimedia']) } for i in range(len(results))]    
 	
 	return render_template("index.html", links=links)
 
@@ -136,8 +134,7 @@ def register():
 		#user.set_password(form.password.data)
 		db.session.add(user)
 		db.session.commit()
-		flash('Congratulations, you are now a registered user!')
-		
+		flash('Congratulations, you are now a registered user!')		
 
 		return redirect(url_for('login'))
 
@@ -199,7 +196,6 @@ def category():
 	categories =  "arts,automobiles,books,business,fashion,food,health,home,insider,magazine,movies,national,nyregion,obituaries,opinion,politics,realestate,science,sports,sundayreview,technology,theater,tmagazine,travel,upshot,world"
 
 	categorys = categories.split(',')
-
 	
 	return render_template("category.html", categorys=categorys)
 
@@ -229,8 +225,7 @@ def storyslist():
 @login_required
 def home(category_title):
 	""" List of news links. """
-	""" Make API call to NYT for Top Story's Section News links. """
-	
+	""" Make API call to NYT for Top Story's Section News links. """	
 	
 	res = requests.get(f"https://api.nytimes.com/svc/topstories/v2/{category_title}.json", params={"api-key": os.getenv("API_KEY")})
 		
@@ -256,7 +251,6 @@ def channelPage(channel_title):
 	""" Route takes GET request with title string.
 		Looks for that string channel name and returns it.
 		Else returns channels page with channel not found error. """
-
 	
 	""" Get Channel From DataBase if it exists. """	
 	channel = Channel.query.filter_by(title=channel_title).first_or_404()
@@ -268,7 +262,6 @@ def channelPage(channel_title):
 
 		return render_template("channels_list.html", error=error)
 
-
 	""" Channel Info. """
 	
 	""" list of Messages from Channel. Send first 20. """
@@ -276,7 +269,6 @@ def channelPage(channel_title):
 	
 	if not messages:
 		messages = "No Messages."
-
 
 	""" List of Storys from Channel. Send first 20. """
 	storys = channel.storys 
@@ -307,7 +299,6 @@ def storyPage(story_id):
 		Else returns storys page with story not found error.
 		Fix if story doesnt have a unique title then look it up by id """
 
-
 	""" Get Story From DataBase if it exists. """
 	story = Story.query.filter_by(id=story_id).first_or_404()
 
@@ -323,7 +314,6 @@ def storyPage(story_id):
 	if not comments:
 		comments = "No Comments."
 
-
 	""" List of Links from Story. Send first 20. """
 	links = story.links
 	
@@ -338,8 +328,7 @@ def storyPage(story_id):
 		
 		comment = Comment(user_id=current_user.id, story_id=story.id, comment_text=form.comment_text.data, user=current_user, story=story)
 		db.session.add(comment)
-		db.session.commit()
-				
+		db.session.commit()				
 		
 		return render_template("story_page.html", story=story, comments=comments, links=links, form=form)
 	
@@ -358,8 +347,7 @@ def createChannel():
 	
 	if form.validate_on_submit():
 		""" Check User doesnt already have a Channel. """
-		""" If User has Channel redirect to channel. """
-		
+		""" If User has Channel redirect to channel. """		
 		
 		ch = Channel.query.filter_by(user=current_user).first()
 		if ch is not None:
@@ -379,7 +367,6 @@ def createChannel():
 		""" Commit changes to DataBase. """
 		db.session.commit()
 		flash('Congratulations, you Added Your Channel!')		
-
 		
 		return redirect(url_for('channelPage', channel_title=form.title.data))
 
@@ -390,7 +377,7 @@ def createChannel():
 @login_required
 def createStory():
 	""" Create A Story. """
-			
+
 	form = CreateStoryForm()
 	""" Get values from form. """
 	
@@ -401,7 +388,6 @@ def createStory():
 		if channel is None:
 			flash("You Don't Have A Channel.")
 			return redirect(url_for('createChannel'))
-
 
 		st = Story.query.filter_by(user_id=current_user.id, title=form.title.data).first()
 		if st is not None:
@@ -421,77 +407,109 @@ def createStory():
 		
 		""" Commit changes to DataBase. """
 		db.session.commit()
-		flash('Congratulations, you Added A Story!')		
-
+		flash('Congratulations, you Added A Story!')	
 		
 		return redirect(url_for('storyPage', story_id=story.id))
 		
 	return render_template("story_create.html", form=form)
 
 
-@socketio.on("submit message")
-def message(data):
-	print(f"New DATA === > {data}")
-	new_message = data["message"]
-	channel_title = data['channel_t']
-	channel = Channel.query.filter_by(title=channel_title).first()
-	#message = Message(user_id=current_user.id, channel_id=channel.id, message_text=new_message, user=current_user, channel=channel)
-	#db.session.add(message)
-	#db.session.commit()
-	room = channel_title
-	print(f"New Message === > {new_message}")
-	print(f"New channel === > {channel}")
-	print(f"current_user === > {current_user.channel[0].title}")
-	emit("new message", new_message, broadcast=True, room=room)
 
 @socketio.on("join")
 def on_join(data):
-	# place user in room 
-	print(f"New DATA  joining === > {data}")
+	""" Place User in room. """ 
+	""" Get room from Data. """
+	print(f" < === DATA  joining === > {data}")
 	user = current_user
 	room = data['room']
-	#channel = Channel.query.filter_by(title=channel_title).first()
+
+	""" If TITLE get Channel, If ID get Story. """ 
+	# channel = Channel.query.filter_by(title=channel_title).first()
+	# story = Story.query.filter_by(id=story_id).first()
+	
+	""" Join Room. """
 	join_room(room)
-	print(f"User join === > {user}")
-	print(f"Channel join === > {room}")
+	print(f" < == User {user} === join  {room} Room == > ")
+	
 
 
 @socketio.on("leave")
 def on_leave(data):
-	# Take user out of room 
-	print(f"New DATA leaving === > {data}")
+	""" Take User Out of room. """ 
+	""" Get room from Data. """
+	print(f" < === DATA leaving === > {data}")
 	user = current_user
 	room = data['room']
+
+	""" If TITLE get Channel, If ID get Story. """
 	#channel = Channel.query.filter_by(title=channel_title).first()
+	# story = Story.query.filter_by(id=story_id).first()
+	
+	""" Leave Room. """
 	leave_room(room)
-	print(f"User leave === > {user}")
-	print(f"Channel leave === > {room}")
+	print(f" < == User {user} === Leave  {room} Room == > ")
+	
+
 
 @socketio.on("leave1")
 def on_leave1(data):
-	# Take user out of room 
-	print(f"New DATA leaving1 === > {data}")
+	""" Take User Out of room. """ 
+	""" Get room from Data. """
+	print(f" < === Finally Leaving Data === > {data}")
 	user = current_user
 	room = data['room']
+
+	""" If TITLE get Channel, If ID get Story. """
 	#channel = Channel.query.filter_by(title=channel_title).first()
+	# story = Story.query.filter_by(id=story_id).first()
+	
+	""" Leave Room. """
 	leave_room(room)
-	print(f"User leave1 out === > {user}")
-	print(f"Channel leave1 out === > {room}")
+	print(f" < == User {user} === Is Finally Leaving  {room} Room == > ")
+
+
+	
+@socketio.on("submit message")
+def message(data):
+	""" New Messages. """
+	""" Get message and Channel title from Data. """
+	print(f"New Message DATA === > {data}")
+	new_message = data["message"]
+	channel_title = data['channel_t']
+	room = channel_title
+
+	""" Make sure Channel exists. (write if loop)"""
+	channel = Channel.query.filter_by(title=channel_title).first()
+	
+	""" Add Message to DataBase and commit changes. """
+	message = Message(user_id=current_user.id, channel_id=channel.id, message_text=new_message, user=current_user, channel=channel)
+	db.session.add(message)
+	db.session.commit()
+	
+	""" Send Message to everyone in Room. """
+	print(f" < ==  Message: {new_message} ===  Channel: {channel} == > ")
+	print(f"current_user === > {current_user}")
+	emit("new message", new_message, broadcast=True, room=room)
 
 
 @socketio.on("submit comment")
 def comment(data):
-	print(f"New DATA === > {data}")
+	""" New Comments. """
+	""" Get comment and Story ID from Data. """
+	print(f"New Comment DATA === > {data}")
 	new_comment = data["comment"]
 	story_id = data['story_id']
-	story = Story.query.filter_by(id=story_id).first()
-	#comment = Comment(user_id=current_user.id, story_id=story_id, comment_text=new_comment, user=current_user, story=story)
-	#db.session.add(comment)
-	#db.session.commit()
 	room = story_id
-	print(f"New Comment === > {new_comment}")
-	print(f"New Story === > {story}")
-	print(f"current_user === > {current_user.channel[0].title}")
+
+	""" Make sure Story exists. (write if loop)"""
+	story = Story.query.filter_by(id=story_id).first()
+
+	""" Add Comment to DataBase and commit changes. """
+	comment = Comment(user_id=current_user.id, story_id=story_id, comment_text=new_comment, user=current_user, story=story)
+	db.session.add(comment)
+	db.session.commit()
+	
+	""" Send Comment to everyone in Room. """
 	emit("new comment", new_comment, broadcast=True, room=room)
 
 
