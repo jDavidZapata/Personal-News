@@ -6,20 +6,11 @@
     <script id="message" type="text/x-handlebars-template">
         <div class="col-12 channel-message message-box message">
             <h4>
-            <span class="badge badge-warning">Message # 
-                {% raw -%}
-                    {{ content1 }}
-                {%- endraw %}
-            </span>
+                <span class="badge badge-warning"> Message # {{ messages.index(message) + 1 }}
+                </span>
             </h4>
-            <h5>[*
-                {% raw -%}
-                    {{ contents }}
-                {%- endraw %}
-            *]  
-                {% raw -%}
-                    {{ contents }}
-                {%- endraw %}
+            <h5>
+                [*{{ message.user.username }} *] {{ message.message_text }}
             </h5>                                
         </div>
     </script>        
