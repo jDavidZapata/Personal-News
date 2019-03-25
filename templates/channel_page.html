@@ -1,7 +1,28 @@
 {% extends 'layout.html' %}
 
 {% block js %}
-  <script src="{{ url_for('static', filename='index2.js') }}"></script>
+    <script src="{{ url_for('static', filename='channelPage.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+    <script id="message" type="text/x-handlebars-template">
+        <div class="col-12 channel-message message-box message">
+            <h4>
+            <span class="badge badge-warning">Message # 
+                {% raw -%}
+                    {{ content1 }}
+                {%- endraw %}
+            </span>
+            </h4>
+            <h5>[*
+                {% raw -%}
+                    {{ contents }}
+                {%- endraw %}
+            *]  
+                {% raw -%}
+                    {{ contents }}
+                {%- endraw %}
+            </h5>                                
+        </div>
+    </script>        
 {% endblock %}
 
 
@@ -123,7 +144,7 @@
 
         <div class="col-12 channel-message message-box">
             <h4><span class="badge badge-warning">Message # {{messages.index(message) + 1}}</span></h4>
-            <h5><*{{message.user.username}}*>  {{message.message_text}}</h5>
+            <h5>[*{{message.user.username}}*]  {{message.message_text}}</h5>
         </div>
 
         
