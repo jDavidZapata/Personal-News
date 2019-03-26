@@ -2,6 +2,27 @@
 
 {% block js %}
   <script src="{{ url_for('static', filename='storyPage.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+    <script id="comment" type="text/x-handlebars-template">
+        <div class="col-12 story-comment comment-box comment">
+            <h4>
+            <span class="badge badge-warning">Comment # 
+                {% raw -%}
+                    {{ content1 }}
+                {%- endraw %}
+            </span>
+            </h4>
+            <h5>[*
+                {% raw -%}
+                    {{ content2 }}
+                {%- endraw %}
+                *]  
+                {% raw -%}
+                    {{ content3 }}
+                {%- endraw %}
+            </h5>                                
+        </div>
+    </script>        
 {% endblock %}
 
 
@@ -86,7 +107,7 @@
     
 
 
-    <div class="messageform form-row justify-content-center">
+    <div class="commentform form-row justify-content-center">
         <form method="post" action="" novalidate >
             {{ form.csrf_token }}                                
                 <div class="form-group ">                    
@@ -131,7 +152,7 @@
 
         <div class="col-12 comment-box story-comment">
             <h4><span class="badge badge-warning">Comment # {{comments.index(comment) + 1}}</span></h4>
-            <h5><*{{comment.user.username}}*>   {{comment.comment_text}}</h5>
+            <h5>[*{{comment.user.username}}*]   {{comment.comment_text}}</h5>
         </div>
         
         {% endfor %}

@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Template for roll results
+    //const template = Handlebars.compile(document.querySelector('#message').innerHTML);
+
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
@@ -14,10 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const comment = document.querySelector('#comment-text').value;
             
-            const comment1 = document.createElement('div');
-            comment1.className = 'story-comment';
-            comment1.innerHTML = "#### New Comment###";
-            document.querySelector('#comments').append(comment1);
+            //const comment1 = document.createElement('div');
+            //comment1.className = 'story-comment';
+            //comment1.innerHTML = "#### New Comment###";
+            //document.querySelector('#comments').append(comment1);
             socket.emit('submit comment', {'comment': comment, 'story_id': story_id});
         };
         
@@ -66,4 +69,8 @@ function add_comment(data) {
 
     // Add comment to DOM.
     document.querySelector('#comments').append(comment);
+
+    // {messages.index(message) + 1} content1
+    // {message.user.username} content2
+    // {message.message_text} content3
 };
