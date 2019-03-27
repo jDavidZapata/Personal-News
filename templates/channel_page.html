@@ -9,9 +9,21 @@
             <h4><span class="badge badge-warning">&lt{{ content2 }}&gt Message # {{ content1 }}</span></h4>
             <h5>{{ content3 }}</h5>                                
         </div>
+        {%- endraw %}        
+    </script> 
+    <script id="story" type="text/x-handlebars-template">
+        {% raw -%}
+        <div class="col-12 channel-story-top">
+            <h4><a href={{ scontent1 }} class="badge badge-danger">Story # {{scontent2}}  {{scontent3}}</a></h4>
+            <h2 class="storys-title">*{{scontent3}}*</h2>
+        </div>
+        <div class="col-12 channel-story-bottom">
+            <h4>Story Description:</h4>
+            <h3>{{scontent4}}</h3>
+        </div>
         {%- endraw %}
-        
-    </script>        
+    </script>  
+
 {% endblock %}
 
 {% block header %}
@@ -43,7 +55,7 @@
         </div>        
     </div>
     {% endif %}
-    <div class="row justify-content-left channel-storys" style="background-color: violet">
+    <div id="storys" class="row justify-content-left channel-storys" style="background-color: violet">
         {% if storys == "No Storys." %}
 
         <div class="col-lg-4 col-md-6 channel-story">               
@@ -58,7 +70,8 @@
             <h2 class="storys-title">*{{story.title}}*</h2>
         </div>
         <div class="col-12 channel-story-bottom">
-            <h3>Story Description: {{story.story_text.capitalize()}}</h3>
+            <h4>Story Description:</h4>
+            <h3>{{story.story_text.capitalize()}}</h3>
         </div>
         
         {% endfor %}

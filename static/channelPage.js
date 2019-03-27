@@ -1,8 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Template for roll results
+    // Template for message results
     const message_template = Handlebars.compile(document.querySelector('#message').innerHTML);
 
+    // Template for story results
+    const story_template = Handlebars.compile(document.querySelector('#story').innerHTML);
+    
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
@@ -27,6 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // When a new message is announced, add to the div list
     socket.on('new message', data => {
         add_message(data)
+        
+    });
+
+    // When a new message is announced, add to the div list
+    socket.on('new story', data => {
+        add_story(data)
         
     });
 
@@ -61,8 +70,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     };
 
+
+    // Add a new story with given data to DOM.
+    function add_story(data) {
+
+        // Create new story.
+        var storys_list = document.querySelectorAll('.channel-story-top').length;
+        const story = story_template({'scontent1': `/storyPage/${data.story_id}`, 'scontent2': storys_list + 1, 'scontent3': data.title, 'scontent4': data.body});
+
+        // Add story to DOM.
+        document.querySelector('#storys').innerHTML += story;
+
+    };
+
+
     
 });
-
 
 

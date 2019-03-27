@@ -355,7 +355,10 @@ def createChannel():
 			return redirect(url_for('createChannel'))
 		
 		""" Add Channel. """
-		channel = Channel(user_id=current_user.id, title=form.title.data, text=form.text.data, user=current_user)
+		title = form.title.data
+		text = form.text.data
+
+		channel = Channel(user_id=current_user.id, title=title, text=text, user=current_user)
 		db.session.add(channel)
 
 		""" Add Message if any. """
@@ -366,9 +369,14 @@ def createChannel():
 		
 		""" Commit changes to DataBase. """
 		db.session.commit()
+
 		flash('Congratulations, you Added Your Channel!')		
 		
-		return redirect(url_for('channelPage', channel_title=form.title.data))
+		""" Broadcast to everyone in Channel. """
+		data = {'title': title, 'body': text, 'user_name': current_user.name}
+		emit("new channel", data, broadcast=True, room='channel_page_list', namespace='/')	
+	
+		return redirect(url_for('channelPage', channel_title=title))
 
 	return render_template("channel_create.html", form=form)
 
@@ -388,15 +396,18 @@ def createStory():
 		if channel is None:
 			flash("You Don't Have A Channel.")
 			return redirect(url_for('createChannel'))
+		
+		title = form.title.data
+		text = form.story_text.data
 
-		st = Story.query.filter_by(user_id=current_user.id, title=form.title.data).first()
+		st = Story.query.filter_by(user_id=current_user.id, title=title).first()
 		if st is not None:
 			flash('You Already Have A Story with this Title.')
 
 			return redirect(url_for('createStory'))
 				
 		""" Add Story. """
-		story = Story(user_id=current_user.id, channel_id=channel.id, title=form.title.data, story_text=form.story_text.data, user=current_user, channel=channel)
+		story = Story(user_id=current_user.id, channel_id=channel.id, title=title, story_text=text, user=current_user, channel=channel)
 		db.session.add(story)
 
 		""" Add Comments if any. """
@@ -407,9 +418,16 @@ def createStory():
 		
 		""" Commit changes to DataBase. """
 		db.session.commit()
-		flash('Congratulations, you Added A Story!')	
-		
-		return redirect(url_for('storyPage', story_id=story.id))
+
+		flash('Congratulations, you Added A Story!')
+
+		""" Broadcast to everyone in Channel. """
+		story_id = story.id
+		data = {'story_id': story_id, 'title': title, 'body': text, 'user_name': current_user.name}
+		emit("new story", data, broadcast=True, room=channel.title, namespace='/')	
+		emit("new story", data, broadcast=True, room='story_page_list', namespace='/')
+
+		return redirect(url_for('storyPage', story_id=story_id))
 		
 	return render_template("story_create.html", form=form)
 

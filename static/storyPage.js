@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Template for roll results
+    // Template for comment results
     const comment_template = Handlebars.compile(document.querySelector('#comment').innerHTML);
 
     // Connect to websocket
