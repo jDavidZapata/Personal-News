@@ -4,24 +4,12 @@
     <script src="{{ url_for('static', filename='channelPage.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
     <script id="message" type="text/x-handlebars-template">
+        {% raw -%}
         <div class="col-12 channel-message message-box message">
-            <h4>
-            <span class="badge badge-warning">Message # 
-                {% raw -%}
-                    {{ content1 }}
-                {%- endraw %}
-            </span>
-            </h4>
-            <h5>[*
-                {% raw -%}
-                    {{ content2 }}
-                {%- endraw %}
-                *]  
-                {% raw -%}
-                    {{ content3 }}
-                {%- endraw %}
-            </h5>                                
+            <h4><span class="badge badge-warning">Message # {{ content1 }}</span></h4>
+            <h5>[*{{ content2 }}*]  {{ content3 }}</h5>                                
         </div>
+        {%- endraw %}
     </script>        
 {% endblock %}
 

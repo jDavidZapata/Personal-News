@@ -474,22 +474,24 @@ def message(data):
 	""" New Messages. """
 	""" Get message and Channel title from Data. """
 	print(f"New Message DATA === > {data}")
-	new_message = data["message"]
+	text = data["message"]
 	channel_title = data['channel_t']
 	room = channel_title
+	user = current_user
 
 	""" Make sure Channel exists. (write if loop)"""
 	channel = Channel.query.filter_by(title=channel_title).first()
 	
 	""" Add Message to DataBase and commit changes. """
-	message = Message(user_id=current_user.id, channel_id=channel.id, message_text=new_message, user=current_user, channel=channel)
+	message = Message(user_id=user.id, channel_id=channel.id, message_text=text, user=user, channel=channel)
 	db.session.add(message)
 	db.session.commit()
 	
 	""" Send Message to everyone in Room. """
-	print(f" < ==  Message: {new_message} ===  Channel: {channel} == > ")
-	print(f"current_user === > {current_user}")
-	emit("new message", new_message, broadcast=True, room=room)
+	print(f" < ==  Message: {text} ===  Channel: {channel} == > ")
+	print(f"current_user === > {user}")
+	data = {'text': text, 'user': user.name}
+	emit("new message", data, broadcast=True, room=room)
 
 
 @socketio.on("submit comment")
@@ -497,20 +499,22 @@ def comment(data):
 	""" New Comments. """
 	""" Get comment and Story ID from Data. """
 	print(f"New Comment DATA === > {data}")
-	new_comment = data["comment"]
+	text = data["comment"]
 	story_id = data['story_id']
 	room = story_id
+	user = current_user
 
 	""" Make sure Story exists. (write if loop)"""
 	story = Story.query.filter_by(id=story_id).first()
 
 	""" Add Comment to DataBase and commit changes. """
-	comment = Comment(user_id=current_user.id, story_id=story_id, comment_text=new_comment, user=current_user, story=story)
+	comment = Comment(user_id=user.id, story_id=story_id, comment_text=text, user=user, story=story)
 	db.session.add(comment)
 	db.session.commit()
 	
 	""" Send Comment to everyone in Room. """
-	emit("new comment", new_comment, broadcast=True, room=room)
+	data = {'text': text, 'user': user.name}
+	emit("new comment", data, broadcast=True, room=room)
 
 
 if __name__ == "__main__":

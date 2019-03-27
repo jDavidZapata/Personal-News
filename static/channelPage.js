@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // Template for roll results
-    //const template = Handlebars.compile(document.querySelector('#message').innerHTML);
+    const message_template = Handlebars.compile(document.querySelector('#message').innerHTML);
 
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
@@ -54,23 +54,31 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('DOM on unloaded end');
     
     });
+
+    
+    // Add a new messaege with given data to DOM.
+    function add_message(data) {
+
+        // Create new message.
+        //const message = document.createElement('div');
+        //message.className = 'channel-message';
+        //message.innerHTML = data;
+
+        // Create new message.
+        const message = message_template({'content1': "####", 'content2': data.user, 'content3': data.text});
+
+        // Add message to DOM.
+        //document.querySelector('#messages').append(message);
+        document.querySelector('#messages').innerHTML += message;
+
+        // {messages.index(message) + 1} content1
+        // {message.user.username} content2
+        // {message.message_text} content3
+
+    };
+
+    
 });
 
 
 
-// Add a new messaege with given data to DOM.
-function add_message(data) {
-
-    // Create new message.
-    const message = document.createElement('div');
-    message.className = 'channel-message';
-    message.innerHTML = data;
-
-    // Add message to DOM.
-    document.querySelector('#messages').append(message);
-
-    // {messages.index(message) + 1} content1
-    // {message.user.username} content2
-    // {message.message_text} content3
-
-};

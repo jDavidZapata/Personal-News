@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // Template for roll results
-    //const template = Handlebars.compile(document.querySelector('#message').innerHTML);
+    const comment_template = Handlebars.compile(document.querySelector('#comment').innerHTML);
 
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
@@ -55,22 +55,29 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('DOM on unloaded end');
     
   });
+
+    // Add a new comment with given data to DOM.
+    function add_comment(data) {
+
+        // Create new comment.
+        const comment = comment_template({'content1': "####", 'content2': data.user, 'content3': data.text});
+        //const comment = document.createElement('div');
+        //comment.className = 'story-comment';
+        //comment.innerHTML = data;
+
+        // Add comment to DOM.
+        document.querySelector('#comments').innerHTML += comment;
+        //document.querySelector('#comments').append(comment);
+
+        // {messages.index(message) + 1} content1
+        // {message.user.username} content2
+        // {message.message_text} content3
+    };
+
+
+
+
 });
 
 
 
-// Add a new comment with given data to DOM.
-function add_comment(data) {
-
-    // Create new comment.
-    const comment = document.createElement('div');
-    comment.className = 'story-comment';
-    comment.innerHTML = data;
-
-    // Add comment to DOM.
-    document.querySelector('#comments').append(comment);
-
-    // {messages.index(message) + 1} content1
-    // {message.user.username} content2
-    // {message.message_text} content3
-};
