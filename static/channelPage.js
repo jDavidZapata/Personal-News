@@ -16,25 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const message = document.querySelector('#message-text').value;
             
-            //const message1 = document.createElement('div');
-            //message1.className = 'channel-message';
-            //message1.innerHTML = "#### new Message###";
-            //document.querySelector('#messages').append(message1);
             socket.emit('submit message', {'message': message, 'channel_t': channel_t});
         };
         
         // When page loads add user to room 
-        socket.emit('join', {'room': channel_t});
-
-        
+        socket.emit('join', {'room': channel_t});      
 
     });
 
     // When a new message is announced, add to the div list
     socket.on('new message', data => {
         add_message(data)
-        //document.querySelector('#new-message').innerHTML = data.message.message_text;
-        //document.querySelector('#user').innerHTML = data.message.user.username;
+        
     });
 
     console.log('DOM fully loaded and parsed');
@@ -60,20 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function add_message(data) {
 
         // Create new message.
-        //const message = document.createElement('div');
-        //message.className = 'channel-message';
-        //message.innerHTML = data;
-
-        // Create new message.
-        const message = message_template({'content1': "####", 'content2': data.user, 'content3': data.text});
+        var messages_list = document.querySelectorAll('.channel-message').length;
+        const message = message_template({'content1': messages_list + 1, 'content2': data.user, 'content3': data.text});
 
         // Add message to DOM.
-        //document.querySelector('#messages').append(message);
         document.querySelector('#messages').innerHTML += message;
-
-        // {messages.index(message) + 1} content1
-        // {message.user.username} content2
-        // {message.message_text} content3
 
     };
 

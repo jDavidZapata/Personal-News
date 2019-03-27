@@ -6,13 +6,13 @@
     <script id="message" type="text/x-handlebars-template">
         {% raw -%}
         <div class="col-12 channel-message message-box message">
-            <h4><span class="badge badge-warning">Message # {{ content1 }}</span></h4>
-            <h5>[*{{ content2 }}*]  {{ content3 }}</h5>                                
+            <h4><span class="badge badge-warning">&lt{{ content2 }}&gt Message # {{ content1 }}</span></h4>
+            <h5>{{ content3 }}</h5>                                
         </div>
         {%- endraw %}
+        
     </script>        
 {% endblock %}
-
 
 {% block header %}
 {% block title %}{{channel.title.upper()}}{% endblock %}
@@ -21,14 +21,11 @@
 {% block body %}
 
 <div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-primary left">
-    {% if channel %}
-    
+    {% if channel %}    
         
     <div class="row justify-content-center">
 
-        <div class="row justify-content-center channel-info">
-            
-            
+        <div class="row justify-content-center channel-info">                   
           
             <div class="col-10 col-md-5 col-sm-10 channel-info-e">
                 <h1 class="channel-title">{{channel.title}}</h1>
@@ -41,22 +38,17 @@
 
             <div class="col-11 channel-info-e">
                 <h2>Channel Description: {{channel.text.capitalize()}}</h2>
-            </div>
-    
+            </div>           
             
-            
-        </div>
-        
+        </div>        
     </div>
     {% endif %}
     <div class="row justify-content-left channel-storys" style="background-color: violet">
         {% if storys == "No Storys." %}
 
-        <div class="col-lg-4 col-md-6 channel-story">
-               
+        <div class="col-lg-4 col-md-6 channel-story">               
             <h2>*{{storys}}*</h2>
         </div>
-
 
         {% else %}
         {% for story in storys %}
@@ -72,8 +64,6 @@
         {% endfor %}
         {% endif %}
     </div>
-
-
 </div>
 
 <div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
@@ -81,41 +71,17 @@
     <form id="form" class="form-inline justify-content-center" action="{{url_for('createStory')}}" method="get">
         <button id="createbutton" type="submit" class="btn btn-warning mb-2">Create/Add New Story</button>
     </form>    
-    
-
-    
-    <div class="messageform form-row justify-content-center">
-        <form method="post" action="" novalidate >
-            {{ form.csrf_token }}                                
-                <div class="form-group ">                    
-                    {{ form.message_text.label }}<br>
-                    {{ form.message_text(size=200) }}<br>
-                    {% for error in form.message_text.errors %}
-                    <span style="color: yellow;">[{{ error }}]</span>
-                    {% endfor %}
-                </div>
-            
-                <div class="form-group">
-                    <p class="btn btn-primary mb-2">{{ form.submit() }}</p>            
-                </div>           
-        </form>
-    </div>
-
-    
+        
     <div>
         <div class="form-group mx-sm-3 mb-2">
             <label for="message" class="sr-only">Enter Message</label>
             <input type="text" name="message_text" class="form-control" id="message-text" placeholder="Your Message..."
                     required>
         </div>
-        <button id="button" class="btn btn-primary mb-2">Leave A Message</button>
-            
+        <button id="button" class="btn btn-primary mb-2">Leave A Message</button>            
     </div>
 
-
-
     {% endif %}
-
 
     <h2> Messages </h2>
     <div id="messages" class="row justify-content-center channel-messages" style="background-color: white">
@@ -126,22 +92,18 @@
             <h2>*{{messages}}*</h2>
         </div>
 
-
         {% else %}
         {% for message in messages %}
 
         <div class="col-12 channel-message message-box">
-            <h4><span class="badge badge-warning">Message # {{messages.index(message) + 1}}</span></h4>
-            <h5>[*{{message.user.username}}*]  {{message.message_text}}</h5>
+            <h4><span class="badge badge-warning">&lt{{message.user.username}}&gt  Message # {{messages.index(message) + 1}}</span></h4>
+            <h5>{{message.message_text}}</h5>
         </div>
-
         
         {% endfor %}
         {% endif %}
     </div>
-
 </div>
-
 
 {% endblock %}
 

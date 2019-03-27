@@ -1,30 +1,17 @@
 {% extends 'layout.html' %}
 
 {% block js %}
-  <script src="{{ url_for('static', filename='storyPage.js') }}"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+    <script src="{{ url_for('static', filename='storyPage.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
     <script id="comment" type="text/x-handlebars-template">
+        {% raw -%} 
         <div class="col-12 story-comment comment-box comment">
-            <h4>
-            <span class="badge badge-warning">Comment # 
-                {% raw -%}
-                    {{ content1 }}
-                {%- endraw %}
-            </span>
-            </h4>
-            <h5>[*
-                {% raw -%}
-                    {{ content2 }}
-                {%- endraw %}
-                *]  
-                {% raw -%}
-                    {{ content3 }}
-                {%- endraw %}
-            </h5>                                
+            <h4><span class="badge badge-warning">&lt{{ content2 }}&gt Comment # {{ content1 }}</span></h4>
+            <h5>{{ content3 }}</h5>                                
         </div>
+        {%- endraw %}
     </script>        
 {% endblock %}
-
 
 {% block header %}
 {% block title %}{{story.title.upper()[:20]}}{% endblock %}
@@ -32,16 +19,14 @@
 
 {% block content %}{% endblock %}
 
-
 {% block body %}
 
 <div class="col-12 col-sm-6 col-lg-8 col-md-8 bg-secondary left">
     {% if story %}
     <h1 class="story-title">{{story.title.capitalize()}}</h1>
     
-    <div class="row justify-content-center story-info">     
-        
-        
+    <div class="row justify-content-center story-info"> 
+                
         <div class="col-lg-5 col-md-5 story-info-e">
             <h3><span class="badge badge-pill badge-light">PStory By: </span></h3>
             <h3><span class="badge badge-warning">{{story.user.name}}</span></h3>
@@ -69,11 +54,9 @@
         {% if links %}
         {% if links == "No Links." %}
 
-        <div class="col-lg-4 col-md-6 story-link">
-               
+        <div class="col-lg-4 col-md-6 story-link">               
             <h2>*No Links</h2>
         </div>
-
 
         {% else %}
         {% for link in links %}
@@ -89,9 +72,7 @@
         {% endfor %}
         {% endif %}
         {% endif %}
-    </div>
-
-    
+    </div>    
 </div>
 
 <div class="col-12 col-lg-4 col-sm-6 col-md-4 bg-danger right">
@@ -103,26 +84,6 @@
     <form id="form" class="form-inline justify-content-center" action="" method="">
     <button id="linksbutton" type="submit" class="btn btn-primary mb-2">Add News Link</button>
     </form>
-    
-    
-
-
-    <div class="commentform form-row justify-content-center">
-        <form method="post" action="" novalidate >
-            {{ form.csrf_token }}                                
-                <div class="form-group ">                    
-                    {{ form.comment_text.label }}<br>
-                    {{ form.comment_text(size=200) }}<br>
-                    {% for error in form.comment_text.errors %}
-                    <span style="color: yellow;">[{{ error }}]</span>
-                    {% endfor %}
-                </div>
-            
-                <div class="form-group">
-                    <p class="btn btn-primary mb-2">{{ form.submit() }}</p>            
-                </div>           
-        </form>
-    </div>
 
     <div>
         <div class="form-group mx-sm-3 mb-2">
@@ -134,8 +95,6 @@
             
     </div>
 
-
-
     {% endif %}
     <h2> Comments </h2>
     <div id="comments" class="row justify-content-center story-comments" style="background-color: white">
@@ -146,20 +105,17 @@
             <h2>*No Comments</h2>
         </div>
 
-
         {% else %}
         {% for comment in comments %}
 
         <div class="col-12 comment-box story-comment">
-            <h4><span class="badge badge-warning">Comment # {{comments.index(comment) + 1}}</span></h4>
-            <h5>[*{{comment.user.username}}*]   {{comment.comment_text}}</h5>
+            <h4><span class="badge badge-warning">&lt{{comment.user.username}}&gt Comment # {{comments.index(comment) + 1}}</span></h4>
+            <h5>{{comment.comment_text}}</h5>
         </div>
         
         {% endfor %}
         {% endif %}
     </div>
-
 </div>
-
 
 {% endblock %}
