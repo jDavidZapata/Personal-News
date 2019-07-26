@@ -9,7 +9,8 @@ Personal News Application
 * [Sources](#sources)
 
 ## General info
-This project is a News Web Application.  It's powered by the New York Times API. It lets users search the NY Times categories.  It allows users to create their own channels in witch they can add this or their own stories too. It also users to leave messages in the users channel or comments on their stories.
+This project is a News Web Application.  It's powered by the New York Times API. It lets users search the NY Times categories.  It allows users to create their own channels in witch they can add New York Times stories or their own stories. It also users to leave messages in this channels or comments on the channels stories.
+
 	
 ## Technologies
 Project is created with:
@@ -29,7 +30,9 @@ Project is created with:
 
 ## Project Status
 * This project is still under development.  
-* New functionality will be added to let users type thier own search queries. 
+* New functionality will let users type thier own search queries and/or look for a certain channel or story by name. 
+
+
 
 ## Sources
 This project was inspire by the course meterial from Harvard College's CSCI E-33a - CS50’s Web Programming
