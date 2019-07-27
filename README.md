@@ -23,6 +23,7 @@ Project is created with:
 * JavaScript
 * HTML
 * CSS
+* Postgresql
 * Plus other libaries, for full list check out the requirements.txt: https://github.com/jDavidZapata/Personal-News/blob/master/requirements.txt
 
 ## Setup and Launch
